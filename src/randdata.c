@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include <randdata.h>
+#include "randdata.h"
 
 double norm_rand()
 {

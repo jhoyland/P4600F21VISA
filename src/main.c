@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <randdata.h>
 #include <time.h>
+#include "randdata.h"
+#include "calcfunctions.h"
 
 /*
   TASK:
@@ -11,18 +12,20 @@
 
 */
 
-
 int main(int argc, char** argv)
 {
 
   int ndata = 1024;
   double x[ndata];
+  double meanValue = 0.0;
 
   random_data(ndata,x);
 
   /*
     Code to test your functions goes here
   */
+  meanValue = mean(x, ndata);
+  printf("%f\n", meanValue);
 
   FILE* outputfile =   fopen("data.dat","w");
 

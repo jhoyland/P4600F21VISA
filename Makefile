@@ -1,6 +1,6 @@
 # Compiler and linker options
 CC        = gcc
-CFLAGS    = -c -v -g
+CFLAGS    = -c -g #-v
 LDFLAGS   =
 
 # User directories to search

@@ -3,6 +3,8 @@
 #include <randdata.h>
 #include <time.h>
 
+#include "myFunction.h"
+
 /*
   TASK:
 
@@ -20,9 +22,12 @@ int main(int argc, char** argv)
 
   random_data(ndata,x);
 
-  /*
-    Code to test your functions goes here
-  */
+  double avg;
+
+  avg = mean(x,ndata);
+  printf("The mean is %g\n",avg);
+
+
 
   FILE* outputfile =   fopen("data.dat","w");
 

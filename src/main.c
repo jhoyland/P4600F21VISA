@@ -18,7 +18,7 @@ int main(int argc, char** argv)
   int ndata = 1024;
   double x[ndata];
   double meanValue = 0.0;
-  double rms = 0.0;
+  double rmsValue = 0.0;
 
   random_data(ndata,x);
 
@@ -26,8 +26,8 @@ int main(int argc, char** argv)
     Code to test your functions goes here
   */
   meanValue = mean(x, ndata);
-  rms = rms(x, ndata);
-  
+  rmsValue = rms(x, ndata);
+
 
 
   FILE* outputfile =   fopen("data.dat","w");

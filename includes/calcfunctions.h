@@ -4,5 +4,6 @@
 double mean(double* data, int length);
 double rms(double* data, int length);
 double amplitude(double* data, int length);
+double smooth(double* data, int length, int filterLength);
 
 #endif

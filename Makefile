@@ -8,7 +8,7 @@ BUILDDIR  = ./build
 INCDIR    = ./include
 SRCDIR    = ./src
 
-HOMEDIR   = /c/msys64/home/Advanced\ student/LCR_Project/P4600F21VISA
+HOMEDIR   = /c/msys64/home/MYakovlev/LCR_Project/P4600F21VISA
 
 # 3rd Party library directories to search
 LIBDIR    = /mingw64/lib $(HOMEDIR)/libs

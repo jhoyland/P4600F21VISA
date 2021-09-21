@@ -4,6 +4,6 @@
 double SA_Mean(int n, double * data);
 void SA_RMS(int n, double * data, double * result);
 double SA_Amplitude(int n, double * data);
-//void SA_smooth();
+void SA_smooth(int n, int m, double * data, double * result);
 
 #endif

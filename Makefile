@@ -8,7 +8,7 @@ BUILDDIR  = ./build
 INCDIR    = ./include
 SRCDIR    = ./src
 
-HOMEDIR   = /c/msys64/home/hoyla/week3lib
+HOMEDIR   = /c/msys64/home/ENg/P4600F21VISA
 
 # 3rd Party library directories to search
 LIBDIR    = /mingw64/lib $(HOMEDIR)/libs
@@ -25,7 +25,7 @@ LIBDIRCMD = $(addprefix -L,$(LIBDIR))
 INCCMD    = $(addprefix -I,$(INCDIR) $(LIBINCDIR))
 
 # The final executable name
-TARGET    = datamanip
+TARGET    = ernie_datamanip
 
 # The rules
 

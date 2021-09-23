@@ -18,9 +18,7 @@ double SA_RMS(int n, double * data, double mean) {
 		point = data[i] - mean;
 		RMS = RMS + point*point;
 	}
-	point = RMS/n;
-	RMS = sqrt(point);
-	return RMS;
+	return sqrt(RMS/n);
 }
 
 void SA_smooth(int n, int m, double * data, double * result){

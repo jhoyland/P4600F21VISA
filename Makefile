@@ -1,6 +1,5 @@
-# Compiler and linker options
-CC        = gcc
-CFLAGS    = -c -v -g
+
+CFLAGS    = -c -Wall -g
 LDFLAGS   =
 
 # User directories to search
@@ -15,7 +14,8 @@ LIBDIR    = /mingw64/lib $(HOMEDIR)/libs
 LIBINCDIR = $(HOMEDIR)/includes
 
 # List sources, object files and libraries to be used
-SOURCES   = $(wildcard $(SRCDIR)/*.c )
+SOURCES   = $(wildcard $(SRCDIR)/*.c )# Compiler and linker options
+CC        = gcc
 OBJECTS   = $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SOURCES))
 LIBRARIES =
 

@@ -1,7 +1,9 @@
 #ifndef __CALCULATIONS_H
 #define __CALCULATIONS_H
 
-double mean(double* x, int n);
-double rootMeanSquare(double* x, int n);
+void smoothing(double* x, int n, int w, double* xSmoothed);
+double mean(double* xSmoothed, int n);
+double rootMeanSquare(double* xSmoothed, int n);
+
 
 #endif

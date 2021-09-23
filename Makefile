@@ -8,7 +8,7 @@ BUILDDIR  = ./build
 INCDIR    = ./include
 SRCDIR    = ./src
 
-HOMEDIR   = /c/msys64/home/hoyla/week3lib
+HOMEDIR   = /c/msys64/home/texas/p4600F21visa
 
 # 3rd Party library directories to search
 LIBDIR    = /mingw64/lib $(HOMEDIR)/libs

@@ -15,9 +15,9 @@
 
 int main(int argc, char** argv)
 {
-  
+
   int ndata = 1024;
-  int windowSize = 5;
+  int windowSize = 10;
   int smoothedLen = ndata - windowSize + 1;
   double x[ndata];
   double meanValue = 0.0;
@@ -37,14 +37,20 @@ int main(int argc, char** argv)
 
 
   FILE* outputfile =   fopen("data.dat","w");
+  FILE* outputfilesmoothed =   fopen("smoothed_data.dat","w");
 
-  for(int i = 0; i< ndata; i++)
+  for(int i = 0; i < ndata; i++)
   {
     fprintf(outputfile,"\n%0.5f",x[i]);
-
   }
 
   fclose(outputfile);
 
+  for(int i = 0; i < smoothedLen; i++)
+  {
+    fprintf(outputfilesmoothed,"\n%0.5f",smoothed[i]);
+  }
+
+  fclose(outputfilesmoothed);
 
 }

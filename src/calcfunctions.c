@@ -40,20 +40,21 @@ void smooth(double* data, int length, int filterLength, double* smoothed)
 
 	// for (int i = adjustment; i < (length - adjustment + 1); i++)
 	// {
-	// 	for (int j = 0; i < filterLength; ++i)
+	// 	for (int j = 0; j < filterLength; j++)
 	// 	{
 	// 		summed += data[i + j];
+	// 		// printf("summed%g\nj = %d", summed, j);
 	// 	}
-
+	// 	// printf("---------\n");
 	// 	smoothed[i] = summed/filterLength;
+	// 	summed = 0.0;
 	// }
-
 
 	double *cursor;
 	cursor = data;
 	for (int i = 0; i < smoothedLength; i++)
 	{
-		for (int j = 0; i < filterLength; i++)
+		for (int j = 0; j < filterLength; j++)
 		{
 			summed += cursor[j];
 		}

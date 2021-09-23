@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include "randdata.h"
 #include "calcfunctions.h"
 
@@ -19,14 +20,24 @@ int main(int argc, char** argv)
   double x[ndata];
   double meanValue = 0.0;
   double rmsValue = 0.0;
+  double amplitudeValue = 0.0;
 
   random_data(ndata,x);
 
   /*
     Code to test your functions goes here
   */
-  meanValue = mean(x, ndata);
-  rmsValue = rms(x, ndata);
+  int windowSize = 9;
+  int smoothedLen = ndata - windowSize + 1;
+  double smoothed[smoothedLen];
+  smooth(x, ndata, windowSize, smoothed);
+
+  meanValue = mean(smoothed, smoothedLen);
+  rmsValue = rms(smoothed, smoothedLen, meanValue);
+  amplitudeValue = amplitude(smoothed, smoothedLen, rmsValue);
+  
+  printf("Mean = %g\nRMS = %g\nAmplitude = %g\n", meanValue, rmsValue, amplitudeValue);
+
 
 
 

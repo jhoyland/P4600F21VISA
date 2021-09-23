@@ -59,6 +59,7 @@ void smooth(double* data, int length, int filterLength, double* smoothed)
 		}
 
 		smoothed[i] = summed/filterLength;
+		summed = 0.0;
 		cursor++;
 	}
 

@@ -15,7 +15,7 @@
 
 int main(int argc, char** argv)
 {
-
+  
   int ndata = 1024;
   int windowSize = 5;
   int smoothedLen = ndata - windowSize + 1;

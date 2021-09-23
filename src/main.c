@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <randdata.h>
+#include "randdata.h"
 #include <time.h>
+#include "dataprocessing.h"
 
 /*
   TASK:
@@ -23,6 +24,26 @@ int main(int argc, char** argv)
   /*
     Code to test your functions goes here
   */
+
+  // find mean of randdata, RMS, AMP, and print to file
+
+  float m, r, a; 
+  m = mean(x[], ndata);
+  r = rms(x[], ndata);
+  a = amp(x[], ndata);
+
+  FILE* datafile = fopen("sampleinfo.dat","w");
+
+  fprintf(datafile,"\n MEAN = ", m);
+  fprintf(datafile,"\n RMS = ", r);
+  fprintf(datafile,"\n AMPLITUDE = ", a);
+
+  fclose(datafile);
+
+
+  /* END TESTING
+  */
+  // file printing
 
   FILE* outputfile =   fopen("data.dat","w");
 

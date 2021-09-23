@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
+#include<dataprocessing.h>
 
 /*
   TASK:
@@ -57,21 +58,65 @@ float stdev(float num[], float mean, int n)
 
 // RMS Value: 
 
-float RMS(float num[])
+float rms(float num[], int n)
 {
+	// n is the length of the array
+	float sum = 0, rms = 0;
+	for(int i=0; i<n; i++) //get the sum of squared values in array 
+	{
+		sum+= pow(num[n],2);
+	}	
+	rms = sqrt(sum/n);
 
+	return rms;
 }
 
 //Amplitude:
 
-float Amp(float num[])
+float Amp(float num[], int n)
 {
-
+	// n is the length of the array 
+	// the following peak method is not averaged and might produce
+	//slight errors so it has been discarded 
+	/*float peak[n], amp;
+	for (i=0; i<n; i++)
+	{
+		if (i>0 && num[i] >= num[i-1] && num[i] >= num[i+1])
+		{
+			peak[i] = num[i];
+		}
+	}
+	peak.sort();
+	amp = peak[0];
+	return amp; */
+	float amp;
+	amp = rms(num, n) * sqrt(2);
+	return amp;
 }
 
 //Moving Average Filter:
 
-float MAF(float num[])
+float smooth(double *d, int n, int w, double* end)
 {
+	// where n is the length of the array, w is the window
+	// double* is empty array 
+	// moving average filter is the sum w # of elements/# of all elements
+	double filter = 0;
 
+	for(int i = 0; i < (n-w); i++) // cycle through without breaking upper limit
+	{
+		for(int j=0; j < w; j++) 
+		{
+			filter += (1/w) * d[i+j];
+		}
+		end[i] = d[i] * filter; 
+		filter = 0;
+	}
 }
+
+/*int main()
+{
+	// test
+	printf("Test test");
+	return 0;
+} */

@@ -17,6 +17,8 @@ int main(int argc, char** argv)
 {
 
   int ndata = 1024;
+  int windowSize = 5;
+  int smoothedLen = ndata - windowSize + 1;
   double x[ndata];
   double meanValue = 0.0;
   double rmsValue = 0.0;
@@ -24,11 +26,6 @@ int main(int argc, char** argv)
 
   random_data(ndata,x);
 
-  /*
-    Code to test your functions goes here
-  */
-  int windowSize = 9;
-  int smoothedLen = ndata - windowSize + 1;
   double smoothed[smoothedLen];
   smooth(x, ndata, windowSize, smoothed);
 
@@ -37,8 +34,6 @@ int main(int argc, char** argv)
   amplitudeValue = amplitude(smoothed, smoothedLen, rmsValue);
   
   printf("Mean = %g\nRMS = %g\nAmplitude = %g\n", meanValue, rmsValue, amplitudeValue);
-
-
 
 
   FILE* outputfile =   fopen("data.dat","w");

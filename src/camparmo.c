@@ -1,21 +1,36 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include "camparmo.h"
 
-double polynomial(double x, int p, double* c)
+double mean(int n, double *x)
 {
-	double y = 0;
 	int i;
+	double y=0;
+	double m =0;
 
-	for(i=0;i<=p;i++)
+	for(i=0; i<n; i++)
 	{
-		y +=  c[i] * pow(x,i);
+		y = y + x[i];
 	}
 
-	return y;
+	m = y/i;
+
+	return m;
 }
 
-int main(int argc, char**argv)
+double RMS(int n, double *x)
 {
+	int i;
+	double r=0;
+	double sum =0;
 
+	for(i=0;i<n;i++)
+	{
+		sum = sum + x[i]*x[i];
+	}
+	r = sqrt(sum/n);
+	printf("\nRMS in function =%f",r);
+
+	return r;
 }

@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <randdata.h>
+#include "randdata.h"
+#include "camparmo.h"
 #include <time.h>
+
 
 /*
   TASK:
@@ -18,12 +20,13 @@ int main(int argc, char** argv)
   int ndata = 1024;
   double x[ndata];
 
-  random_data(ndata,x);
 
+  random_data(ndata,x);
   /*
     Code to test your functions goes here
   */
-
+ // mean(ndata,x);
+  //RMS(ndata,x);
   FILE* outputfile =   fopen("data.dat","w");
 
   for(int i = 0; i< ndata; i++)
@@ -31,8 +34,7 @@ int main(int argc, char** argv)
     fprintf(outputfile,"\n%0.5f",x[i]);
 
   }
-
   fclose(outputfile);
-
-
+  printf("\nRMS Value =%0.5f",RMS(ndata,x));
+  printf("\nMean Value =%0.5f",mean(ndata,x));
 }

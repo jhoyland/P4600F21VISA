@@ -1,14 +1,14 @@
 # Compiler and linker options
 CC        = gcc
-CFLAGS    = -c -v -g
+CFLAGS    = -c -Wall -g
 LDFLAGS   =
 
 # User directories to search
-BUILDDIR  = ./build
-INCDIR    = ./include
-SRCDIR    = ./src
+HOMEDIR   = /c/msys64/home/DCamparmo/P4600F21VISA
+BUILDDIR  = $(HOMEDIR)/build
+INCDIR    = $(HOMEDIR)/include
+SRCDIR    = $(HOMEDIR)/src
 
-HOMEDIR   = /c/msys64/home/hoyla/week3lib
 
 # 3rd Party library directories to search
 LIBDIR    = /mingw64/lib $(HOMEDIR)/libs

@@ -30,7 +30,6 @@ void SA_smooth(int n, int m, double * data, double * result){
 	}
 }
 
-
 double SA_Amplitude(double rms){
 	return (rms*sqrt(2.0));
 }

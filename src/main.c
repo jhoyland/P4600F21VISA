@@ -17,15 +17,31 @@
 int main(int argc, char** argv)
 {
 
-  int ndata = 1024;
+  int ndata = 10;
+  int windowLen = 2;
   double x[ndata];
+  double smoothSignal[ndata - windowLen + 1];
+  //random_data(ndata,x);
+  int i;
+  for(i=0; i<ndata; i++)
+  {
+    x[i]=i;
+  }
 
-  random_data(ndata,x);
 
-  double avg;
+
+  double avg, rootmeansquare, amp;
 
   avg = mean(x,ndata);
   printf("The mean is %g\n",avg);
+
+  rootmeansquare = rms(x, ndata);
+  printf("The RMS is %g\n",rootmeansquare);
+
+  amp = amplitude(rootmeansquare, avg);
+  printf("The amplitude is %g\n",amp);
+
+  smooth(x, ndata, windowLen, smoothSignal);
 
 
 

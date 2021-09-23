@@ -27,16 +27,16 @@ int main(int argc, char** argv)
 
   // find mean of randdata, RMS, AMP, and print to file
 
-  float m, r, a; 
-  m = mean(x[], ndata);
-  r = rms(x[], ndata);
-  a = amp(x[], ndata);
+  double m, r, a; 
+  m = mean(x, ndata);
+  r = rms(x, ndata);
+  a = Amp(x, ndata);
 
   FILE* datafile = fopen("sampleinfo.dat","w");
 
-  fprintf(datafile,"\n MEAN = ", m);
-  fprintf(datafile,"\n RMS = ", r);
-  fprintf(datafile,"\n AMPLITUDE = ", a);
+  fprintf(datafile,"\n MEAN = %f", m);
+  fprintf(datafile,"\n RMS = %f", r);
+  fprintf(datafile,"\n AMPLITUDE = %f", a);
 
   fclose(datafile);
 

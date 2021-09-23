@@ -10,9 +10,9 @@
 */
 
 // Mean function: 
-float mean(float num[], int n)
+float mean(double num[], int n)
 {
-	float mean = 0, sum=0;
+	double mean = 0, sum=0;
 	int i = 0;
 
 	for (i=0;i<n;i++)
@@ -20,15 +20,15 @@ float mean(float num[], int n)
 		sum += num[i];
 	}
 
-	mean = sum/10;
+	mean = sum/n;
 
 	return mean;
 }
 
 // Standard Deviation:
-float stdev(float num[], float mean, int n)
+double stdev(double num[], double mean, int n)
 {
-	float dif[n], x, m;
+	double dif[n], x, m;
 	int i=0;
 	while (i<n)
 	{
@@ -40,7 +40,7 @@ float stdev(float num[], float mean, int n)
 
 	// mean of squared difs
 	i = 0;
-	float sum = 0;
+	double sum = 0;
 
 	for (i=0;i<n;i++)
 	{
@@ -58,13 +58,13 @@ float stdev(float num[], float mean, int n)
 
 // RMS Value: 
 
-float rms(float num[], int n)
+double rms(double num[], int n)
 {
 	// n is the length of the array
-	float sum = 0, rms = 0;
+	double sum = 0, rms = 0;
 	for(int i=0; i<n; i++) //get the sum of squared values in array 
 	{
-		sum+= pow(num[n],2);
+		sum += pow(num[n],2);
 	}	
 	rms = sqrt(sum/n);
 
@@ -73,12 +73,12 @@ float rms(float num[], int n)
 
 //Amplitude:
 
-float Amp(float num[], int n)
+double Amp(double num[], int n)
 {
 	// n is the length of the array 
 	// the following peak method is not averaged and might produce
 	//slight errors so it has been discarded 
-	/*float peak[n], amp;
+	/*double peak[n], amp;
 	for (i=0; i<n; i++)
 	{
 		if (i>0 && num[i] >= num[i-1] && num[i] >= num[i+1])
@@ -89,7 +89,7 @@ float Amp(float num[], int n)
 	peak.sort();
 	amp = peak[0];
 	return amp; */
-	float amp;
+	double amp;
 	amp = rms(num, n) * sqrt(2);
 	return amp;
 }

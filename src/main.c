@@ -17,18 +17,12 @@
 int main(int argc, char** argv)
 {
 
-  int ndata = 10;
-  int windowLen = 2;
+  int ndata = 1024;
+  int windowLen = 5;
   double x[ndata];
   double smoothSignal[ndata - windowLen + 1];
-  //random_data(ndata,x);
-  int i;
-  for(i=0; i<ndata; i++)
-  {
-    x[i]=i;
-  }
-
-
+  random_data(ndata,x);
+  
 
   double avg, rootmeansquare, amp;
 
@@ -46,14 +40,25 @@ int main(int argc, char** argv)
 
 
   FILE* outputfile =   fopen("data.dat","w");
-
-  for(int i = 0; i< ndata; i++)
+  if(outputfile != NULL)
   {
-    fprintf(outputfile,"\n%0.5f",x[i]);
+    for(int i = 0; i< ndata; i++)
+      {
+        fprintf(outputfile,"\n%0.5f",x[i]);
 
+      }
+      fclose(outputfile);
   }
 
-  fclose(outputfile);
 
-
+  FILE* smoothdatafile = fopen("smoothdata.dat","w");
+  if(smoothdatafile != NULL)
+  {
+    for(int i=0; i< ndata-windowLen+1; i++)
+    {
+      fprintf(smoothdatafile,"\n%0.5f", smoothSignal[i]);
+    }
+    fclose(smoothdatafile);
+  }
+  
 }

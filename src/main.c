@@ -3,32 +3,30 @@
 #include "randdata.h"
 #include "calculations.h"
 #include <time.h>
+#include <math.h>
 
 
 int main(int argc, char** argv)
 {
-  double mean1, rms;
+  double mean1, rms, amp;
   int ndata = 1024;
   double x[ndata];
   int window = 5; 
-  double xSmoothed[ndata-(window-1)];
-  int ndataSmoothed = ndata - (window -1 )/2;
+  int ndataSmoothed = ndata-(window-1);
+  double xSmoothed[ndataSmoothed];
+
   random_data(ndata,x);
 
   smoothing(x,ndata, window, xSmoothed);
+  
   mean1 = mean(xSmoothed,ndataSmoothed);
-  printf ("%g \n", mean1);
+  printf ("Mean: %g \n", mean1);
 
   rms = rootMeanSquare(xSmoothed,ndataSmoothed);
-  printf ("%g \n", rms);
+  printf ("RMS: %g \n", rms);
 
-
-  for (int i = (window-1)/2; i < window+(window-1)/2; i++)
-  {
-    printf("%g ",x[i]);
-  }
-  printf ("\n%g\n ",xSmoothed[0]);
-
+  amp = amplitude(xSmoothed,ndataSmoothed);
+  printf("Amplitude: %g \n", amp);
 
 
   FILE* outputfile =   fopen("data.dat","w");
@@ -58,6 +56,5 @@ int main(int argc, char** argv)
 
     fclose(outputfile);
   }
-
 
 }

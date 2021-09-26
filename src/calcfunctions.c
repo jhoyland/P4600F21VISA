@@ -27,8 +27,10 @@ double rms(double* data, int length, double mean)
 
 double amplitude(double* data, int length, double rms)
 {
-	double amplitude = 0.0;
-	amplitude = rms * sqrt(2);
+	double amplitude = 0.0; 
+	amplitude = rms * sqrt(2); // JAMES: math.h actually provides a constant M_SQRT2 for this so you don't have to calculate it each time
+	// See "https://www.gnu.org/software/libc/manual/html_node/Mathematical-Constants.html"  for more math constants.
+	// amplitude = rms * M_SQRT2;
 	return amplitude;
 }
 

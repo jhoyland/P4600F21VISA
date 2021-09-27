@@ -7,15 +7,19 @@ void smoothing(double* x, int n, int w, double* xSmoothed)
 {
   double sum;
   int j, i;
-  
-  for (i = (w-1)/2; i < n - (w-1)/2; i++)  
+
+  for (i = (w-1)/2; i < n - (w-1)/2; i++)
   {
     sum = 0;
     for (j = 0; j < w; j++)
     {
-      sum = sum + x[i+j]; 
+      sum = sum + x[i+j];
     }
     xSmoothed[i-(w-1)/2] = sum / w;
+    // JAMES: For efficiency it is probably better to
+    // caclulate (w-1)/2 separately at the beginning and put it in a variable. You use
+    // it in several locations and its value does not change but it
+    // will probably be recalculated each time.
   }
 }
 
@@ -54,7 +58,7 @@ double amplitude(double* xSmoothed, int n)
 {
   double rms = rootMeanSquare(xSmoothed,n);
   double mean1 = mean(xSmoothed,n);
-  double amp = sqrt(2*(rms*rms - mean1*mean1));  
+  double amp = sqrt(2*(rms*rms - mean1*mean1));
   return amp;
 
 }

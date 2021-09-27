@@ -17,6 +17,7 @@ int main(int argc, char** argv)
 {
 
   int ndata = 1024;
+  // JAMES:Your variable names move_avg_size and move_avg are a little confusing
   int move_avg_size=10;
   int move_avg=ndata-move_avg_size+1;
 

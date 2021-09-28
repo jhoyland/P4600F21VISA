@@ -3,6 +3,10 @@
 #include <math.h>
 #include "camparmo.h"
 
+// Good. Try to get the smoothing and amplitude functions done also.
+// Maybe also give your header file a more descriptive name so
+// people know what it is for.
+
 double mean(int n, double *x)
 {
 	int i;

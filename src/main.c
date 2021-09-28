@@ -61,13 +61,16 @@ int main(int argc, char** argv)
 
         char ret[MESSAGE_LENGTH];
 
-        viWrite(scopeHandle,"*IDN?\n",5,&resultCount);
+        viPrintf(scopeHandle,"*IDN?\n");
         //Sleep(1000);
-        viRead(scopeHandle,ret,MESSAGE_LENGTH,&resultCount);
+        //viFlush(scopeHandle,VI_READ_BUF_DISCARD);
+        viScanf(scopeHandle,"%t",ret);
 
         printf(ret);
 
-        viWrite(scopeHandle,"CH1:SCALE 0.5\n",13,&resultCount);
+        float v = 1.0;
+
+        viPrintf(scopeHandle,"CH1:SCALE %0.2f\n",v);
       /*  viRead(scopeHandle,ret,10,&resultCount);
 
         double scale;

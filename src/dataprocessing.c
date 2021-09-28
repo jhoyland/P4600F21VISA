@@ -10,7 +10,7 @@
 */
 
 // Mean function:
-float mean(double num[], int n)
+double mean(double num[], int n)
 {
 	double mean = 0, sum=0;
 	int i = 0;
@@ -34,8 +34,8 @@ double stdev(double num[], double mean, int n)
 	{
 		x = num[i] - mean;
 		// JAMES: Probably quicker here just to say dif[i] = x*x;
-		x = x*x;
-		dif[i] = x;
+		// ERINN: Changed. 
+		dif[i] = x*x;
 		i++;
 	}
 
@@ -81,7 +81,7 @@ double Amp(double num[], int n)
 {
 	// n is the length of the array
 	// the following peak method is not averaged and might produce
-	//slight errors so it has been discarded
+	// slight errors so it has been discarded
 	/*double peak[n], amp;
 	for (i=0; i<n; i++)
 	{
@@ -102,7 +102,7 @@ double Amp(double num[], int n)
 
 //Moving Average Filter:
 
-float smooth(double *d, int n, int w, double* end)
+double smooth(double *d, int n, int w, double* end)
 {
 	// where n is the length of the array, w is the window
 	// double* is empty array
@@ -117,16 +117,18 @@ float smooth(double *d, int n, int w, double* end)
 			// integer division producing zero if w>1. The simplest fix is
 			// to write (1.0/w). But multiplying by 1/w is the same as dividing
 			// by w so :
-			// filter += d[i+j]/w;
-			filter += (1/w) * d[i+j];
+			filter += d[i+j];
 			// JAMES: However, this is not the most efficient approach,
 			// you are dividing each of the added terms by w, why not
 			// just divide the final sum of the window by w? This would
 			// save w-1 divisions per data point.
+			// ERINN: Done, filter is now divided by w and saved in end
 		}
 		// JAMES: You do not need to multiply by d[i] the contents of filter
 		// is the averaged value at that point.
-		end[i] = d[i] * filter;
+		// ERINN: Done, filter is added to end without multiplying 
+		// by the d[i] value
+		end[i] = filter/w;
 		filter = 0;
 	}
 }

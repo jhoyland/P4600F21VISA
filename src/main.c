@@ -18,16 +18,16 @@ int main(int argc, char** argv)
 
   int ndata = 1024;
   // JAMES:Your variable names move_avg_size and move_avg are a little confusing
-  int move_avg_size=10;
-  int move_avg=ndata-move_avg_size+1;
+  int move_avg_window=10;
+  int move_avg_arraysize=ndata-move_avg_window+1;
 
   double x[ndata];
-  double smooth[move_avg];
+  double smooth[move_avg_arraysize];
 
   random_data(ndata,x);
-  SA_smooth(move_avg,move_avg_size,x,smooth);
-  double mean_smooth = SA_Mean(move_avg,smooth);
-  double rms_smooth = SA_RMS(move_avg,smooth,mean_smooth);
+  SA_smooth(move_avg_arraysize,move_avg_window,x,smooth);
+  double mean_smooth = SA_Mean(move_avg_arraysize,smooth);
+  double rms_smooth = SA_RMS(move_avg_arraysize,smooth,mean_smooth);
   double amplitude_smooth = SA_Amplitude(rms_smooth);
 
   FILE* outputfile0 =   fopen("result.dat","w");
@@ -37,7 +37,7 @@ int main(int argc, char** argv)
   }
   fprintf(outputfile0,"\n\n\n");
 
-  for(int i = 0; i< move_avg; i++)
+  for(int i = 0; i< move_avg_arraysize; i++)
   {
     fprintf(outputfile0,"\n%d) Smooth : %0.5f",i,smooth[i]);
   }
@@ -55,7 +55,7 @@ int main(int argc, char** argv)
   fclose(outputfile1);
 
   FILE* outputfile2 =   fopen("smooth.dat","w");
-  for(int i = 0; i< move_avg; i++)
+  for(int i = 0; i< move_avg_arraysize; i++)
   {
     fprintf(outputfile2,"\n%0.5f",smooth[i]);
   }

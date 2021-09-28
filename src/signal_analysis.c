@@ -29,8 +29,10 @@ void SA_smooth(int n, int m, double * data, double * result){
 		twice on two different data sets with the same result array.
 		so result[i] may not equal zero for j = 0. You should zero result before
 		entering this second loop with result[i] = 0;
-		*/
 
+		MY: Fixed
+		*/
+		result[i] = 0;
 		for (int j = 0; j< m; j++) {
 			result[i]=result[i]+data[i+j];
 		}

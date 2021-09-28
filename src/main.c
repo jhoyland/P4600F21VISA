@@ -5,6 +5,8 @@
 #include "visa.h"
 #include <windows.h>
 
+#define MESSAGE_LENGTH 128
+
 /*
   TASK:
 
@@ -57,16 +59,26 @@ int main(int argc, char** argv)
 
         printf("\nOpened Scope");
 
-        char ret[50];
+        char ret[MESSAGE_LENGTH];
 
         viWrite(scopeHandle,"*IDN?\n",5,&resultCount);
         //Sleep(1000);
-        viRead(scopeHandle,ret,50,&resultCount);
-
+        viRead(scopeHandle,ret,MESSAGE_LENGTH,&resultCount);
 
         printf(ret);
-        printf("\nGot here");
 
+        viWrite(scopeHandle,"CH1:SCALE 0.5\n",13,&resultCount);
+      /*  viRead(scopeHandle,ret,10,&resultCount);
+
+        double scale;
+
+        sscanf(ret,"%lf\n",&scale);
+
+        printf(ret);
+        printf("\nConverted value: %f",scale);*/
+
+        viClose(scopeHandle);
+        viClose(defaultRM);
         //fflush(stdout);
       }
 

@@ -108,12 +108,7 @@ int main(int argc, char** argv)
   printf(returned_message);
 
   // now try other commands
-  // set time scale  
-
-  //printf("The Horizontal Time/Division = %d", HORizontal:DELay:SCAle?);
-  viPrintf("CH1:SCA 0.5 \n");
-  fflush(stdout);
-
+  viPrintf(scope_handle, "CH1:SCA 0.5 \n");
 
 
   return 0;

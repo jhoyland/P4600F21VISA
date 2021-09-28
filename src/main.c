@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <randdata.h>
 #include <time.h>
-
+#include "visa.h"
 #include "myFunction.h"
 
 /*
@@ -13,8 +13,66 @@
 
 */
 
+int main(int argc, char const *argv[])
+{
+  ViStatus status = VI_SUCCESS;
+  ViSession resource_manager;
+  ViSession scope_handle;
+  ViFindList resource_list;
+  unsigned int num_inst;
+  char description[VI_FIND_BUFLEN];
+  
+  unsigned int channel = 1;
+  double volts = 1.0;
 
-int main(int argc, char** argv)
+  status = viOpenDefaultRM(&resource_manager);
+  if(status != VI_SUCCESS)
+  {
+    //Do something about it
+    printf("Whoa");
+    exit(1);
+  }
+  else
+  {
+    //continue
+    status = viFindRsrc(resource_manager,"USB[0-9]::0x0699?*INSTR",&resource_list,&num_inst,description);
+    if(status != VI_SUCCESS)
+    {
+      printf("could not find any instruments");
+      fflush(stdout);
+      exit(1);
+    }
+
+    status = viOpen(resource_manager,description,VI_NULL,VI_NULL,&scope_handle);
+    if(status != VI_SUCCESS)
+    {
+      printf("could not connect to scope");
+      fflush(stdout);
+      exit(1);
+    }
+// Oscilloscope commands goes here:::::::::::::::::::::::::::::::::
+    printf("\nOpened scope\n");
+
+    char returned_message[128];
+
+    viPrintf(scope_handle, "*IDN?\n");
+    viScanf(scope_handle,"%t",returned_message);
+
+    printf(returned_message);
+
+
+    //char volt_message[128];
+    viPrintf(scope_handle, "CH1:SCAle 1.0\n CH1:POS 0\n HOR:POS 0\n HOR:SCA 500E-6\n");
+    //viScanf(scope_handle,"%t",volt_message);
+    //printf(volt_message);
+    
+  }
+
+  return 0;
+}
+
+
+/*int main(int argc, char** argv)
 {
 
   int ndata = 1024;
@@ -61,4 +119,4 @@ int main(int argc, char** argv)
     fclose(smoothdatafile);
   }
   
-}
+}*/

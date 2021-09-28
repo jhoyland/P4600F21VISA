@@ -34,7 +34,7 @@ double RMS(int n, double *x)
 		sum = sum + x[i]*x[i];
 	}
 	r = sqrt(sum/n);
-	printf("\nRMS in function =%f",r);
+	//printf("\nRMS in function =%f",r);
 
 	return r;
 }

@@ -27,7 +27,7 @@ int main(int argc, char** argv)
   ViUInt32 num_inst;
   ViUInt32 resultCount;
 
-  ViSession defaultRM, scopeHandle;
+  ViSession defaultRM, fgHandle;
   ViChar description[VI_FIND_BUFLEN];
   setvbuf(stdout,NULL,_IONBF,16);
 
@@ -40,16 +40,17 @@ int main(int argc, char** argv)
   }
   else
   {
-    status = viFindRsrc(defaultRM,"USB[0-9]::0x0699?*INSTR",&resourceList,&num_inst,description); //find the scope
+    status = viFindRsrc(defaultRM,"USB[0-9]::?*INSTR",&resourceList,&num_inst,description); //find the scope
 		if (status != VI_SUCCESS)
 		{
 			// Do something if cannot find scope
 		}
 		else
 		{
-      printf("\nFound Scope");
+      printf("\nFound function gnerator\n");
+      printf(description);
 
-      status = viOpen(defaultRM,description,VI_NULL,VI_NULL,&scopeHandle); //open the scope and give it a handle
+      status = viOpen(defaultRM,description,VI_NULL,VI_NULL,&fgHandle); //open the scope and give it a handle
       if(status != VI_SUCCESS)
       {
         // Do something if cannot open scope
@@ -57,21 +58,25 @@ int main(int argc, char** argv)
       else
       {
 
-        printf("\nOpened Scope");
+        printf("\nOpened function generator");
 
         char ret[MESSAGE_LENGTH];
 
-        viPrintf(scopeHandle,"*IDN?\n");
+        viPrintf(fgHandle,"*IDN?\n");
         //Sleep(1000);
-        //viFlush(scopeHandle,VI_READ_BUF_DISCARD);
-        viScanf(scopeHandle,"%t",ret);
+        //viFlush(fgHandle,VI_READ_BUF_DISCARD);
+        viScanf(fgHandle,"%t",ret);
 
         printf(ret);
 
-        float v = 1.0;
+        viPrintf(fgHandle,"SOURCE1:APPLY:SIN 175,0.003,-0.5,0\n");
+        viPrintf(fgHandle,"OUTP1:STAT ON\n");
+        viPrintf(fgHandle,"SYST:BEEP:IMM");
 
-        viPrintf(scopeHandle,"CH1:SCALE %0.2f\n",v);
-      /*  viRead(scopeHandle,ret,10,&resultCount);
+      /*    float v = 1.0;
+
+        viPrintf(fgHandle,"CH1:SCALE %0.2f\n",v);
+      viRead(fgHandle,ret,10,&resultCount);
 
         double scale;
 
@@ -80,7 +85,7 @@ int main(int argc, char** argv)
         printf(ret);
         printf("\nConverted value: %f",scale);*/
 
-        viClose(scopeHandle);
+        viClose(fgHandle);
         viClose(defaultRM);
         //fflush(stdout);
       }

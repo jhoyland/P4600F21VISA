@@ -14,8 +14,19 @@
 */
 
 
-int main(int argc, char** argv)
-{
+void OSC_data_to_voltage (int length, float size_division, unsigned char * input, double * output) {
+  double quant = 10.0*size_division/256.0; 
+  int i=0;
+  int value=0;
+  while (i<(length-6)){
+    output[i]=((double)input[i+6]-127.0)*quant;
+    i=i+1;
+  }
+}
+
+
+
+int main(int argc, char** argv) {
 
   // int ndata = 1024;
   // // JAMES:Your variable names move_avg_size and move_avg are a little confusing
@@ -73,83 +84,102 @@ int main(int argc, char** argv)
   char description[VI_FIND_BUFLEN];
 
   if(status!=VI_SUCCESS){
-    printf("things go BRRRRRRRR");
+    printf("Something is wront");
     fflush(stdout);
     exit(1);
   }
   else{    
     status = viFindRsrc(resource_manager,"USB[0-9]::0x0699?*INSTR",&resource_list,&resource_num,description);
     if(status!=VI_SUCCESS){
-      printf("instruments go BRRRRRRRR");
+      printf("Instrument is not found");
       fflush(stdout);
       exit(1);
     }
     status=viOpen(resource_manager,description,VI_NULL,VI_NULL,&scope_handle);
     if(status!=VI_SUCCESS){
-      printf("connection go BRRRRRRRR");
+      printf("Connection is not established");
       fflush(stdout);
       exit(1);
     }
-    printf("\n\n\nhehe boi\n\n\n");
-  fflush(stdout);
+    printf("\n\n\nIntrument is connected\n\n\n");
+    fflush(stdout);
 
-  	float desired_vert_scale;
-  float desired_vert_offset;
-  float desired_horz_scale;	
+
 
     char returned_message[128];
-    viPrintf(scope_handle,"*IDN?\n");
-    viScanf(scope_handle,"%t",returned_message);
-    printf(returned_message);
-    fflush(stdout);
 
-    // MY:ques and adjust vertical scale;
+
+
+    viPrintf(scope_handle,"DATA:WIDTH 1\n");
+
+    viPrintf(scope_handle,"DATA:SOURCE CH1\n");
+
+    viPrintf(scope_handle,"DATA:ENCDG RPBINARY\n");
+
+    viPrintf(scope_handle,"DATA:START 1\n");
+
+    viPrintf(scope_handle,"DATA:STOP 2500\n");
+    viPrintf(scope_handle,"DATA:STOP?\n");
+    viScanf(scope_handle,"%t",returned_message);
+
+
+
+    int OSC_data_size=atof(returned_message);
+    int true_OSC_data_size=OSC_data_size-6;
+    unsigned char OSC_data[OSC_data_size];
+    double voltage_data[true_OSC_data_size];
+
+
+
     viPrintf(scope_handle,"CH1:SCALE?\n");
     viScanf(scope_handle,"%t",returned_message);
-    fflush(stdout);
-    printf("\nvertical scale RN: %s",returned_message);
-    fflush(stdout);
-    printf("\nDESIRED vertical scale? :");
-    fflush(stdout);
-    scanf("%f",desired_vert_scale);
-    viPrintf(scope_handle,"CH1:SCALE %f\n",desired_vert_scale); //value is volt-based
-    viPrintf(scope_handle,"CH1:SCALE?\n");
-    viScanf(scope_handle,"%t",returned_message);
-    printf(returned_message);
-    fflush(stdout);
+    float vertical_scale = atof(returned_message);
 
+    viPrintf(scope_handle,"CH1:POSition 0.0\n");
+
+    viPrintf(scope_handle,"CURVE?\n");;
+    viScanf(scope_handle,"%t",OSC_data);
     printf("\n");
 
-    // MY:ques and adjust vertical offset;
-  viPrintf(scope_handle,"CH1:POSition?\n");
-    viScanf(scope_handle,"%t",returned_message);
-    printf("\nvertical offset RN: %s",returned_message);
-    fflush(stdout);
-    printf("\nDESIRED vertical offset? :");
-    fflush(stdout);
-    scanf("%f",desired_vert_offset);
-    viPrintf(scope_handle,"CH1:POSition %f\n",desired_vert_offset); //value is fraction of current vertical division
-    viPrintf(scope_handle,"CH1:POSition?\n");
-    viScanf(scope_handle,"%t",returned_message);
-    printf(returned_message);
-    fflush(stdout);
 
-    printf("\n");
 
-    // MY:ques and adjust timescale;
-    viPrintf(scope_handle,"HORizontal:MAIn:SCAle?\n"); 
-    viScanf(scope_handle,"%t",returned_message);
-    printf("\nhorizontal scale RN: %s",returned_message);
+    FILE* outputfile1 =   fopen("OSC_data.dat","w");
+    for(int i = 6; i< OSC_data_size; i++)
+    {
+      fprintf(outputfile1,"\n%d",OSC_data[i]);
+    }
     fflush(stdout);
-    printf("\nDESIRED horizontal scale? :");
+    fclose(outputfile1);
+
+    OSC_data_to_voltage(OSC_data_size, vertical_scale, OSC_data, voltage_data);
+
+
+
+    int move_avg_window=25;
+    int smooth_data_size=true_OSC_data_size-move_avg_window+1;
+    double smooth_voltage_data[smooth_data_size];
+
+    SA_smooth(smooth_data_size,move_avg_window,voltage_data,smooth_voltage_data);
+
+
+
+    FILE* outputfile2 =   fopen("OSC_vdata.dat","w");
+    for(int i = 0; i < true_OSC_data_size; i++)
+    {
+      fprintf(outputfile1,"\n%f",voltage_data[i]);
+    }
     fflush(stdout);
-    scanf("%f",desired_vert_scale);
-    viPrintf(scope_handle,"HORizontal:MAIn:SCAle %f\n",desired_horz_scale); //value is second-based
-    viPrintf(scope_handle,"HORizontal:MAIn:SCAle?\n");
-    viScanf(scope_handle,"%t",returned_message);
-    printf(returned_message);
+    fclose(outputfile2);
+
+
+
+    FILE* outputfile3 =   fopen("OSC_vdata_smooth.dat","w");
+    for(int i = 0; i < smooth_data_size; i++)
+    {
+      fprintf(outputfile1,"\n%f",smooth_voltage_data[i]);
+    }
     fflush(stdout);
+    fclose(outputfile2);
 
   }
-
 }

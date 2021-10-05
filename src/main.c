@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "randdata.h"
 #include <time.h>
+#include <math.h>
 #include "dataprocessing.h"
 #include "visa.h"
 
@@ -50,7 +51,6 @@
   for(int i = 0; i< ndata; i++)
   {
     fprintf(outputfile,"\n%0.5f",x[i]);
-
   }
 
   fclose(outputfile);
@@ -108,8 +108,36 @@ int main(int argc, char** argv)
   printf(returned_message);
 
   // now try other commands
-  viPrintf(scope_handle, "CH1:SCA 0.5 \n");
 
+  viPrintf(scope_handle, "CH1:SCA 1 \n");
+
+  // try to use the curve command to read in a set of data
+  //create an array to store values: 
+  viPrintf(scope_handle, "DATA:SOURCE CH1\nDATA:ENC BINARY\nDATA:WIDTH 1\nDATA:START 0\nDATA:STOP 2500\n");
+
+  char data[2500];
+
+  viPrintf(scope_handle, "CURVe?\n");
+  viScanf(scope_handle, "%t", data);
+  int i;
+  //read through loop
+  /*for(i=0; i<2500; i++)
+  {
+    printf("%d \n",data[i]);
+  }
+  */
+  //print data to a file 
+
+  FILE* datafile = fopen("curve.dat","w");
+  double ddata[2500];
+
+  for(i=0; i<2500; i++)
+  {
+    ddata[i] = (10/255) * data[i];
+    fprintf(datafile,"%d \n",ddata[i]);
+  }
+
+  fclose(datafile);
 
   return 0;
   }

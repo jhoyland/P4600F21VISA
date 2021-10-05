@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 #include "calcfunctions.h"
 
 
@@ -66,4 +67,25 @@ void smooth(double* data, int length, int filterLength, double* smoothed)
 		cursor++;
 	}
 
+}
+int adcConvert(char* data, double* converted)
+{
+	int  start = 1;
+	start = data[1] - '0';
+    char str[5] = "";    
+
+    for(int i = 2; i <= (start + 1); i++)
+    {
+    	char ch = data[i];
+    	strncat(str, &ch, 1);
+    }
+
+    int numdatapoints = atoi(str) - (start + 2);
+
+    for(int i = start ; i < 2500; i++)
+    {
+       converted[i] = data[i] * 5.0/256.0;
+    }
+
+    return start + 2;
 }

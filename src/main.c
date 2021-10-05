@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <string.h>
 #include "randdata.h"
 #include "calcfunctions.h"
 #include "visa.h"
@@ -47,7 +48,7 @@ int main(int argc, char** argv)
       exit(1);
     }
 
-    printf("\nOpened scope");
+    printf("\nOpened scope\n");
 
     char returned_message[128];
     char scale_message[128];
@@ -59,12 +60,13 @@ int main(int argc, char** argv)
     printf(returned_message);
     fflush(stdout);
 
-    viPrintf(scope_handle, "CH1:SCAle 0.7446\nHORizontal:SCAle 0.10\nCH1:VOLts?\n");
-    //viPrintf(scope_handle, "HORizontal:SCAle 1.0\n");
+    viPrintf(scope_handle, "AUTOSet EXECute\n");
+
+    //viPrintf(scope_handle, "CH1:SCAle 0.5\nCH1:VOLts?\n");
 
     viScanf(scope_handle, "%t", volt_message);
     printf("Voltage scale = %s\n", volt_message);
-    //fflush(stdout);
+    fflush(stdout);
 
 
     viPrintf(scope_handle, "CH1:SCAle?\n");
@@ -72,6 +74,22 @@ int main(int argc, char** argv)
     printf("Vertical scale = %s\n", scale_message);
     fflush(stdout);
 
+    char data[2500];
+    double data_double[2500];
+
+    viPrintf(scope_handle, "DATa:Source CH1\nDATa:ENC RIBinary\nCurve?\n");
+    viScanf(scope_handle, "%t", data);
+
+    int start = adcConvert(data, data_double);
+
+    FILE* outputfile =   fopen("data.dat","w");
+
+    for(int i = start; i < 2500; i++)
+    {
+      fprintf(outputfile,"\n%0.5f",data_double[i]);
+    }
+
+    fclose(outputfile);
 
 
 

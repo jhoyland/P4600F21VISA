@@ -5,6 +5,7 @@
 #include "visa.h"
 #include "convertScopedata.h"
 #include "myFunction.h"
+#include "dataTofile.h"
 
 /*
   TASK:

@@ -3,6 +3,7 @@
 #include <randdata.h>
 #include <time.h>
 #include "visa.h"
+#include "convertScopedata.h"
 #include "myFunction.h"
 
 /*
@@ -66,6 +67,18 @@ int main(int argc, char const *argv[])
     //viScanf(scope_handle,"%t",volt_message);
     //printf(volt_message);
     
+    //Try and bring in data from the oscilloscope
+    char dataGot[2500];
+    double dataDouble[2500];
+    double delta_volts=5.0; //Vpp is 5.0v in function generator
+    double step = delta_volts/256.0;
+    int i=0;
+    viPrintf(scope_handle, "DATa:SOUrce CH1\n DATa:ENCdg RIBinary\n DATa:STARt 1\n DATa:STOP 2500\n CURVe?\n");
+    viScanf(scope_handle,"%t", dataGot);
+
+    convertScopedata(dataGot, dataDouble, step);
+    dataTofile(dataDouble, "scopedata", 2500);
+
   }
 
   return 0;

@@ -23,6 +23,26 @@ double mean(int n, double *x)
 	return m;
 }
 
+double smoothed(int n, double *x, int w, double *ave)
+{
+	int i;
+	int j;
+	double s;
+
+	for(i=0; i<n-4; i++)
+	{
+		ave[i]=0;
+		for(j=0;j<w;j++)
+		{
+			ave[i]= ave[i]+x[i+j];
+		}
+		 ave[i]=ave[i]/5;
+		 //printf("Ave = %f\n",ave[i]);
+
+	}
+	return s;
+}
+
 double RMS(int n, double *x)
 {
 	int i;
@@ -37,4 +57,14 @@ double RMS(int n, double *x)
 	//printf("\nRMS in function =%f",r);
 
 	return r;
+}
+
+double Amp(int n, double*x)
+{
+	double A;
+
+	A = RMS(n,x)*sqrt(2);
+	//printf("\nAmplitude =%f",A);
+	return A;
+
 }

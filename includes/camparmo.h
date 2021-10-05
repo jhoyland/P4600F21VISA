@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <math.h>
 
-
+double smoothed(int n, double *x, int w, double *ave);
 double mean(int n, double *x);
 double RMS(int n, double *x);
+double Amp(int n, double *x);

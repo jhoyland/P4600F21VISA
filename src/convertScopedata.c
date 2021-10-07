@@ -10,6 +10,6 @@
       {
        dataDouble[i] = dataGot[i] * step;
       }
-
+      
     }
     

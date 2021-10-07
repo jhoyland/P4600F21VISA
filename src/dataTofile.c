@@ -16,4 +16,5 @@ void dataTofile(double *data, char *filename, int ndata)
       }
       fclose(outputfile);
   }
+  
 }

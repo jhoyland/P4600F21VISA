@@ -6,6 +6,7 @@
 #include "convertScopedata.h"
 #include "myFunction.h"
 #include "dataTofile.h"
+#include <windows.h>
 
 /*
   TASK:
@@ -19,11 +20,11 @@ int main(int argc, char const *argv[])
 {
   ViStatus status = VI_SUCCESS;
   ViSession resource_manager;
-  ViSession scope_handle;
+  ViSession scope_handle, fgHandle;
   ViFindList resource_list;
-  unsigned int num_inst;
+  long unsigned int num_inst;
   char description[VI_FIND_BUFLEN];
-  
+
   unsigned int channel = 1;
   double volts = 1.0;
 
@@ -36,11 +37,11 @@ int main(int argc, char const *argv[])
   }
   else
   {
-    //continue
+    //continue finding the scope
     status = viFindRsrc(resource_manager,"USB[0-9]::0x0699?*INSTR",&resource_list,&num_inst,description);
     if(status != VI_SUCCESS)
     {
-      printf("could not find any instruments");
+      printf("could not find any scopes");
       fflush(stdout);
       exit(1);
     }
@@ -52,22 +53,76 @@ int main(int argc, char const *argv[])
       fflush(stdout);
       exit(1);
     }
+
+    //continue finding the function generator
+    status = viFindRsrc(resource_manager,"USB[0-9]::0x1AB1?*INSTR",&resource_list,&num_inst,description);
+    if(status != VI_SUCCESS)
+    {
+      printf("could not find any function generator");
+      fflush(stdout);
+      exit(1);
+    }
+
+    status = viOpen(resource_manager,description,VI_NULL,VI_NULL,&fgHandle);
+    if(status != VI_SUCCESS)
+    {
+      printf("could not connect to function generator");
+      fflush(stdout);
+      exit(1);
+    }
+
+
+
+
+// Function generator commands goes here:::::::::::::::::::::::::::::::
+    printf("\nOpened function generator\n");
+    fflush(stdout);
+
+    char fgInfo[128];
+
+    viPrintf(fgHandle, "*IDN?\n");
+    viScanf(fgHandle,"%t",fgInfo);
+
+    printf(fgInfo);
+    fflush(stdout);
+
+
+    viPrintf(fgHandle,"Source1:APPLY:SIN 10,5,0,0\n"); //<freq Hz>,<amp Vpp/2>,<offset Vdc>,<phase deg>
+    viPrintf(fgHandle,"OUTP1:STAT ON\n");
+
+    //viPrintf(fgHandle,"SYST:BEEP:IMM\n");
+    //beep loop
+    /*int x=0;
+    for(x=0; x<10; x++)
+    {
+      viPrintf(fgHandle,"SYST:BEEP:IMM\n");
+      Sleep(500);
+    }*/
+    
+    
 // Oscilloscope commands goes here:::::::::::::::::::::::::::::::::
     printf("\nOpened scope\n");
+    fflush(stdout);
 
-    char returned_message[128];
+    char scopeInfo[128];
 
     viPrintf(scope_handle, "*IDN?\n");
-    viScanf(scope_handle,"%t",returned_message);
+    viScanf(scope_handle,"%t\n",scopeInfo);
 
-    printf(returned_message);
-
+    printf(scopeInfo);
+    fflush(stdout);
 
     //char volt_message[128];
-    viPrintf(scope_handle, "CH1:SCAle 1.0\n CH1:POS 0\n HOR:POS 0\n HOR:SCA 500E-6\n");
+    //viPrintf(scope_handle, "CH1:SCAle 1.0\n CH1:POS 0\n HOR:POS 0\n HOR:SCA 500E-6\n"); //preset CH1 viewing window
+    printf("\nAutosetting...\n");
+    fflush(stdout);
+    viPrintf(scope_handle,"AUTOSet EXECute\n");//autoset 
+    Sleep(5000);
     //viScanf(scope_handle,"%t",volt_message);
     //printf(volt_message);
     
+
+
     //Try and bring in data from the oscilloscope
     char dataGot[2500];
     double dataDouble[2500];
@@ -78,8 +133,14 @@ int main(int argc, char const *argv[])
     viScanf(scope_handle,"%t", dataGot);
 
     convertScopedata(dataGot, dataDouble, step);
+    printf("\nData converted\n");
+    fflush(stdout);
     dataTofile(dataDouble, "scopedata", 2500);
+    printf("Data file created\n");
+    fflush(stdout);
 
+    viClose(scope_handle);
+    viClose(fgHandle);
   }
 
   return 0;

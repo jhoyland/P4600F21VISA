@@ -3,7 +3,7 @@
 #include <time.h>
 #include <math.h>
 #include <string.h>
-#include "randdata.h"
+#include <windows.h>
 #include "calcfunctions.h"
 #include "visa.h"
 
@@ -11,9 +11,8 @@
 int main(int argc, char** argv)
 {
 
-  ViStatus status = VI_SUCCESS;
-  ViSession resource_manager;
-  ViSession scope_handle;
+  ViStatus status_scope = VI_SUCCESS, status_func = VI_SUCCESS, status = VI_SUCCESS;
+  ViSession resource_manager, scope_handle, func_handle;
   ViFindList resource_list;
   long unsigned int num_inst;
   char description[VI_FIND_BUFLEN];
@@ -30,69 +29,97 @@ int main(int argc, char** argv)
   else
   {
 
-    status = viFindRsrc(resource_manager, "USB[0-9]::0x0699?*INSTR", &resource_list, &num_inst, description);
+    status_scope = viFindRsrc(resource_manager, "USB[0-9]::0x0699?*INSTR", &resource_list, &num_inst, description);
 
-    if(status != VI_SUCCESS)
+    if(status_scope != VI_SUCCESS)
     {
-      printf("couldn't find any instruments");
+      printf("couldn't find the Oscilloscope");
       fflush(stdout);
       exit(1);
     }
 
-    status = viOpen(resource_manager, description, VI_NULL, VI_NULL, &scope_handle);
+    status_scope = viOpen(resource_manager, description, VI_NULL, VI_NULL, &scope_handle);
 
-    if(status != VI_SUCCESS)
+    if(status_scope != VI_SUCCESS)
     {
       printf("couldn't connect to oscilloscope");
       fflush(stdout);
       exit(1);
     }
+    printf("\nOpened oscilloscope\n");
 
-    printf("\nOpened scope\n");
+    status_func = viFindRsrc(resource_manager, "USB[0-9]::0x1AB1?*INSTR", &resource_list, &num_inst, description);
+
+    if(status_func != VI_SUCCESS)
+    {
+      printf("couldn't find the function generator");
+      fflush(stdout);
+      exit(1);
+    }
+
+    status_func = viOpen(resource_manager, description, VI_NULL, VI_NULL, &func_handle);
+
+    if(status_func != VI_SUCCESS)
+    {
+      printf("couldn't connect to function generator");
+      fflush(stdout);
+      exit(1);
+    }
+    printf("\nOpened function generator\n");
+
 
     char returned_message[128];
-    char scale_message[128];
-    char volt_message[128];
+    double start_freq = 15;
+    int windowSize = 4;
+    double meanValue = 0.0;
+    double rmsValue = 0.0;
+    double amplitudeValue = 0.0;
+    int length = 2500;
+    double smoothed_data[length];
 
-    viPrintf(scope_handle, "*IDN?\n");
-    viScanf(scope_handle, "%t", returned_message);
+    for(int i = start_freq; i < 17; i++)
+    {
 
-    printf(returned_message);
-    fflush(stdout);
+      double freq = i;
+      viPrintf(func_handle, ":SOURce1:APPLy:SIN %f,3,0,1\n", freq);
 
-    viPrintf(scope_handle, "AUTOSet EXECute\n");
+      viPrintf(scope_handle, "AUTOSet EXECute\n");
+      Sleep(5000);
 
-    //viPrintf(scope_handle, "CH1:SCAle 0.5\nCH1:VOLts?\n");
+      char data[length];
+      double data_double[length];
 
-    viScanf(scope_handle, "%t", volt_message);
-    printf("Voltage scale = %s\n", volt_message);
-    fflush(stdout);
+      viPrintf(scope_handle, "DATa:Source CH1\nDATa:ENC RIBinary\nCurve?\n");
+      viScanf(scope_handle, "%t", data);
+
+      double volts = grabVoltsDiv(scope_handle);
+
+      int smoothLen = adcConvert(data, data_double, volts);
+      
+      smooth(data_double, length, windowSize, smoothed_data);
+
+      meanValue = mean(smoothed_data, length);
+      rmsValue = rms(smoothed_data, length, meanValue);
+      amplitudeValue = amplitude(rmsValue);
+      printf("Mean = %g\nRMS = %g\nAmplitude = %g\n", meanValue, rmsValue, amplitudeValue);
+      printf("------\n");
 
 
-    viPrintf(scope_handle, "CH1:SCAle?\n");
-    viScanf(scope_handle, "%t", scale_message);
-    printf("Vertical scale = %s\n", scale_message);
-    fflush(stdout);
 
-    char data[2500];
-    double data_double[2500];
+    }
 
-    viPrintf(scope_handle, "DATa:Source CH1\nDATa:ENC RIBinary\nCurve?\n");
-    viScanf(scope_handle, "%t", data);
-
-    int start = adcConvert(data, data_double);
 
     FILE* outputfile =   fopen("data.dat","w");
 
-    for(int i = start; i < 2500; i++)
+    for(int i = 0; i < 2500; i++)
     {
-      fprintf(outputfile,"\n%0.5f",data_double[i]);
+      fprintf(outputfile,"\n%0.5f",smoothed_data[i]);
     }
 
+
     fclose(outputfile);
-
-
-
+    viClose(scope_handle);
+    viClose(func_handle);
   }
 
   return 0;

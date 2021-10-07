@@ -3,6 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include "calcfunctions.h"
+#include "visa.h"
 
 
 double mean(double* data, int length)
@@ -26,12 +27,12 @@ double rms(double* data, int length, double mean)
 	return sqrt(sum/length);
 }
 
-double amplitude(double* data, int length, double rms)
+double amplitude(double rms)
 {
 	double amplitude = 0.0; 
 	amplitude = rms * sqrt(2); // JAMES: math.h actually provides a constant M_SQRT2 for this so you don't have to calculate it each time
 	// See "https://www.gnu.org/software/libc/manual/html_node/Mathematical-Constants.html"  for more math constants.
-	// amplitude = rms * M_SQRT2;
+	amplitude = rms * M_SQRT2;
 	return amplitude;
 }
 
@@ -68,7 +69,7 @@ void smooth(double* data, int length, int filterLength, double* smoothed)
 	}
 
 }
-int adcConvert(char* data, double* converted)
+int adcConvert(char* data, double* converted, double volts)
 {
 	int  start = 1;
 	start = data[1] - '0';
@@ -84,8 +85,22 @@ int adcConvert(char* data, double* converted)
 
     for(int i = start ; i < 2500; i++)
     {
-       converted[i] = data[i] * 5.0/256.0;
+       converted[i - start] = data[i + 2] * volts*10.0/256.0;
     }
 
-    return start + 2;
+    return (2500 - (start + 2));
+}
+
+double grabVoltsDiv(ViSession scope_handle)
+{
+	char returned_message[128];
+
+	viPrintf(scope_handle, "CH1:VOLts?\n");
+ 	viScanf(scope_handle, "%t", returned_message);
+ 	fflush(stdout);
+
+	char *eptr;
+	double volts = strtod(returned_message, &eptr);
+
+	return volts;
 }

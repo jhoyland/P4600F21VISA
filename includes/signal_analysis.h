@@ -5,9 +5,10 @@
 // signal_analysis.h the header guard name would usually be
 // __SIGNAL_ANALYSIS_H
 
-double SA_Mean(int n, double * data);
-double SA_RMS(int n, double * data, double mean);
-double SA_Amplitude(double rms);
-void SA_smooth(int n, int m, double * data, double * result);
+float SA_Mean(int n, float * data);
+float SA_RMS(int n, float * data, float mean);
+float SA_Amplitude(float rms);
+float SA_smooth(int n, int m, float * data, float * result);
+void OSC_data_to_voltage (int length, float size_division, unsigned char * input, float * output);
 
 #endif

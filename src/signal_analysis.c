@@ -3,17 +3,17 @@
 #include <time.h>
 #include "signal_analysis.h"
 
-double SA_Mean(int n, double * data){
-	double Mean = 0.0;
+float SA_Mean(int n, float * data){
+	float Mean = 0.0;
 	for (int i = 0; i< n; i++) {
 		Mean=Mean+data[i];
 	}
 	return (Mean/n);
 }
 
-double SA_RMS(int n, double * data, double mean) {
-	double RMS = 0.0;
-	double point = 0.0;
+float SA_RMS(int n, float * data, float mean) {
+	float RMS = 0.0;
+	float point = 0.0;
 	for (int i = 0; i< n; i++) {
 		point = data[i] - mean;
 		RMS = RMS + point*point;
@@ -21,7 +21,7 @@ double SA_RMS(int n, double * data, double mean) {
 	return sqrt(RMS/n);
 }
 
-void SA_smooth(int n, int m, double * data, double * result){
+float SA_smooth(int n, int m, float * data, float * result){
 	for (int i = 0; i< n; i++) {
 		/* JAMES: Potential problem here. You
 		have result[i] = result[i]+data[i+j].Your result array may not be
@@ -40,6 +40,17 @@ void SA_smooth(int n, int m, double * data, double * result){
 	}
 }
 
-double SA_Amplitude(double rms){
+float SA_Amplitude(float rms){
 	return (rms*sqrt(2.0));
+}
+
+
+void OSC_data_to_voltage (int length, float size_division, unsigned char * input, float * output) {
+  double quant = 10.0*size_division/256.0; 
+  int i=0;
+  int value=0;
+  while (i<(length-6)){
+    output[i]=((double)input[i+6]-127.0)*quant;
+    i=i+1;
+  }
 }

@@ -3,50 +3,47 @@
 #include <calculations.h>
 #include <math.h>
 
-void smoothing(double* x, int n, int w, double* xSmoothed)
+void smoothing(double* dataArray, int n, int w, double* dataArraySmoothed)
 {
   double sum;
   int j, i;
+  int smoothEnd = (w-1)/2;
 
-  for (i = (w-1)/2; i < n - (w-1)/2; i++)
+  for (i = smoothEnd; i < n - smoothEnd; i++)
   {
     sum = 0;
-    for (j = 0; j < w; j++)
+    for (j = -smoothEnd; j < smoothEnd; j++)
     {
-      sum = sum + x[i+j];
+      sum = sum + dataArray[i+j];
     }
-    xSmoothed[i-(w-1)/2] = sum / w;
-    // JAMES: For efficiency it is probably better to
-    // caclulate (w-1)/2 separately at the beginning and put it in a variable. You use
-    // it in several locations and its value does not change but it
-    // will probably be recalculated each time.
+    dataArraySmoothed[i - smoothEnd] = sum / w;
   }
+
 }
 
-double mean(double* xSmoothed, int n)
+double mean(double* dataArraySmoothed, int n)
 {
   double sum = 0;
   double mean;
 
   for (int i = 0; i < n ; i++)
   {
-    sum = sum + xSmoothed[i];
+    sum = sum + dataArraySmoothed[i];
   }
-
   mean = sum / n;
 
   return mean;
 
 }
 
-double rootMeanSquare(double* xSmoothed, int n)
+double rootMeanSquare(double* dataArraySmoothed, int n)
 {
   double sumSquares = 0;
   double rms;
 
   for (int i = 0; i < n ; i++)
   {
-    sumSquares = sumSquares + (xSmoothed[i]*xSmoothed[i]);
+    sumSquares = sumSquares + (dataArraySmoothed[i]*dataArraySmoothed[i]);
   }
 
   rms = sqrt(sumSquares/n);
@@ -54,10 +51,10 @@ double rootMeanSquare(double* xSmoothed, int n)
   return rms;
 }
 
-double amplitude(double* xSmoothed, int n)
+double amplitude(double* dataArraySmoothed, int n)
 {
-  double rms = rootMeanSquare(xSmoothed,n);
-  double mean1 = mean(xSmoothed,n);
+  double rms = rootMeanSquare(dataArraySmoothed,n);
+  double mean1 = mean(dataArraySmoothed,n);
   double amp = sqrt(2*(rms*rms - mean1*mean1));
   return amp;
 

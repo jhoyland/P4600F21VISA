@@ -1,7 +1,9 @@
+#include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <time.h>
 #include "signal_analysis.h"
+#include <time.h>
+#include <windows.h>
+#include <math.h>
 
 float SA_Mean(int n, float * data){
 	float Mean = 0.0;
@@ -53,4 +55,16 @@ void OSC_data_to_voltage (int length, float size_division, unsigned char * input
     output[i]=((double)input[i+6]-127.0)*quant;
     i=i+1;
   }
+}
+
+void V_vs_F_datasave (int F_array_size, float * F_array, float * Vamp_array,char * file_name) {
+    const char * name = file_name;
+    FILE* outputfile1 =   fopen(name,"w");
+    fprintf(outputfile1,"Frequency f (Hz), Voltage Amplitude V_amp (V)\n");
+    for(int i = 0; i< F_array_size; i++)
+    {
+      fprintf(outputfile1,"%f,%f\n",F_array[i],Vamp_array[i]);
+    }
+    fflush(stdout);
+    fclose(outputfile1);
 }

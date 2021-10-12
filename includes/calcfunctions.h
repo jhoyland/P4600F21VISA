@@ -7,6 +7,6 @@ double rms(double* data, int length, double mean);
 double amplitude(double rms);
 void smooth(double* data, int length, int filterLength, double* smoothed);
 int adcConvert(char* data, double* converted, double volts);
-double grabVoltsDiv(ViSession scope_handle);
+void writeToFile(char* name, double start_freq, double amplength, double* ampData, double incr);
 
 #endif

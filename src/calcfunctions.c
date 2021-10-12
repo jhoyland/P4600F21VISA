@@ -91,16 +91,16 @@ int adcConvert(char* data, double* converted, double volts)
     return (2500 - (start + 2));
 }
 
-double grabVoltsDiv(ViSession scope_handle)
+void writeToFile(char* name, double start_freq, double amplength, double* ampData, double incr)
 {
-	char returned_message[128];
-
-	viPrintf(scope_handle, "CH1:VOLts?\n");
- 	viScanf(scope_handle, "%t", returned_message);
- 	fflush(stdout);
-
-	char *eptr;
-	double volts = strtod(returned_message, &eptr);
-
-	return volts;
+	FILE* outputfile =   fopen(name,"w");
+    double freq = start_freq;
+    fprintf(outputfile,"x,y\n");
+    for(int i = 0; i < amplength; i++)
+    {
+      fprintf(outputfile,"%f,%0.5f\n", freq, ampData[i]);
+      freq += incr;
+    }
+    fclose(outputfile);
 }
+

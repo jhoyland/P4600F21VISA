@@ -2,11 +2,14 @@
 #include <stdlib.h>
 #include <randdata.h>
 #include <time.h>
+#include <windows.h>
 #include "visa.h"
 #include "convertScopedata.h"
 #include "myFunction.h"
 #include "dataTofile.h"
-#include <windows.h>
+#include "fgenerator.h"
+#include "oscope.h"
+
 
 /*
   TASK:
@@ -75,51 +78,29 @@ int main(int argc, char const *argv[])
 
 
 // Function generator commands goes here:::::::::::::::::::::::::::::::
-    printf("\nOpened function generator\n");
-    fflush(stdout);
+    fgInfo(fgHandle);
 
-    char fgInfo[128];
+    setSinwave(fgHandle,1,100,5,0,0); //<CH:1>, <freq>, <amplitude>, <offset>, <phase>
+    displayWave(fgHandle,1); //<CH:1>
 
-    viPrintf(fgHandle, "*IDN?\n");
-    viScanf(fgHandle,"%t",fgInfo);
-
-    printf(fgInfo);
-    fflush(stdout);
-
-
-    viPrintf(fgHandle,"Source1:APPLY:SIN 10,5,0,0\n"); //<freq Hz>,<amp Vpp/2>,<offset Vdc>,<phase deg>
-    viPrintf(fgHandle,"OUTP1:STAT ON\n");
-
-    //viPrintf(fgHandle,"SYST:BEEP:IMM\n");
-    //beep loop
-    /*int x=0;
-    for(x=0; x<10; x++)
-    {
-      viPrintf(fgHandle,"SYST:BEEP:IMM\n");
-      Sleep(500);
-    }*/
+    //beep(fgHandle);
     
     
 // Oscilloscope commands goes here:::::::::::::::::::::::::::::::::
-    printf("\nOpened scope\n");
-    fflush(stdout);
+    scopeInfo(scope_handle);
 
-    char scopeInfo[128];
 
-    viPrintf(scope_handle, "*IDN?\n");
-    viScanf(scope_handle,"%t\n",scopeInfo);
-
-    printf(scopeInfo);
-    fflush(stdout);
 
     //char volt_message[128];
-    //viPrintf(scope_handle, "CH1:SCAle 1.0\n CH1:POS 0\n HOR:POS 0\n HOR:SCA 500E-6\n"); //preset CH1 viewing window
-    printf("\nAutosetting...\n");
-    fflush(stdout);
-    viPrintf(scope_handle,"AUTOSet EXECute\n");//autoset 
-    Sleep(5000);
     //viScanf(scope_handle,"%t",volt_message);
     //printf(volt_message);
+
+    
+    //setScopewindow(scope_handle,1,1.0,0,500E-6,0); //<handle>, <CH>, <y scale>, <y pos>, <x scale>, <x pos>
+
+   
+    //autosetScope(scope_handle);
+    
     
 
 
@@ -128,13 +109,14 @@ int main(int argc, char const *argv[])
     double dataDouble[2500];
     double delta_volts=5.0; //Vpp is 5.0v in function generator
     double step = delta_volts/256.0;
-    int i=0;
-    viPrintf(scope_handle, "DATa:SOUrce CH1\n DATa:ENCdg RIBinary\n DATa:STARt 1\n DATa:STOP 2500\n CURVe?\n");
-    viScanf(scope_handle,"%t", dataGot);
+ 
+    getScopedata(scope_handle, 1, dataGot);
 
     convertScopedata(dataGot, dataDouble, step);
     printf("\nData converted\n");
     fflush(stdout);
+    
+    
     dataTofile(dataDouble, "scopedata", 2500);
     printf("Data file created\n");
     fflush(stdout);

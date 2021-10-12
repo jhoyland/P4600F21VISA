@@ -9,7 +9,7 @@ void dataTofile(double *data, char *filename, int ndata)
 	FILE* outputfile =   fopen(filenamedotdat,"w");
   if(outputfile != NULL)
   {
-    for(int i = 0; i < ndata; i++)
+    for(int i = 6; i < ndata; i++)
       {
         fprintf(outputfile,"\n%0.5f",data[i]);
 

@@ -58,13 +58,14 @@
 
 } */
 
-//CALLING THE OSCILLOSCOPE
+//CALLING THE OSCILLOSCOPE, FUNCTION GENERATOR, TESTING COMMANDS
 
-int main(int argc, char** argv)
+/* int main(int argc, char** argv)
 {
   ViStatus status = VI_SUCCESS;
   ViSession resource_manager;
   ViSession scope_handle;
+  ViSession fg_handle;
   ViFindList resource_list;
   unsigned int num_inst;
   char description[VI_FIND_BUFLEN];
@@ -100,6 +101,27 @@ int main(int argc, char** argv)
     } 
   printf("\nOpened Scope\n");
 
+// find resources for function generator
+status = viFindRsrc(resource_manager, "USB[0-9]::0x1AB1?*INSTR", &resource_list, &num_inst, &description);
+
+if(status != VI_SUCCESS)
+    {
+      printf("Could not locate any instruments");
+      fflush(stdout);
+      exit(1);
+    }
+
+  status = viOpen(resource_manager, description, VI_NULL, VI_NULL, &fg_handle);
+  
+  if(status != VI_SUCCESS)
+    {
+      printf("Could not connect to function generator");
+      fflush(stdout);
+      exit(1);
+    } 
+  printf("\nOpened Function Generator\n \n");
+
+
   char returned_message[128];
 
   viPrintf(scope_handle, "*IDN?\n");
@@ -107,7 +129,12 @@ int main(int argc, char** argv)
 
   printf(returned_message);
 
-  // now try other commands
+  viPrintf(fg_handle, "*IDN?\n");
+  viScanf(fg_handle, "%t", returned_message);
+
+  printf(returned_message);
+
+  // now try other commands for scope
 
   viPrintf(scope_handle, "CH1:SCA 1 \n");
 
@@ -120,25 +147,67 @@ int main(int argc, char** argv)
   viPrintf(scope_handle, "CURVe?\n");
   viScanf(scope_handle, "%t", data);
   int i;
+  // this code works but is not in voltage values
   //read through loop
-  /*for(i=0; i<2500; i++)
-  {
-    printf("%d \n",data[i]);
-  }
-  */
+  //for(i=0; i<2500; i++)
+  //{
+  //  printf("%d \n",data[i]);
+  //}
+
   //print data to a file 
 
   FILE* datafile = fopen("curve.dat","w");
+  // attempt to turn data into double
   double ddata[2500];
 
   for(i=0; i<2500; i++)
   {
-    ddata[i] = (10/255) * data[i];
-    fprintf(datafile,"%d \n",ddata[i]);
+    ddata[i] = (10.0/255.0) * data[i];
+    fprintf(datafile,"%f \n",ddata[i]);
   }
 
   fclose(datafile);
 
+// try commands for function generator. 
+// we want to set the output on or off
+
+char onoff[4];
+//check status 
+viPrintf(fg_handle, ":OUTP1?\n");
+viScanf(fg_handle, "%t", onoff);
+printf("\nstatus = %s \n", onoff);
+//turn on 
+viPrintf(fg_handle, ":OUTP1:STAT ON\n");
+
+//set the frequency and amplitude of a sin wave
+
+viPrintf(fg_handle, "SOURCE1:APPLY:SIN 1000, 5, 0, 0\n");
+
+fflush(stdout);
   return 0;
   }
+}
+*/
+
+
+// MAIN TO TEST LIBRARY FUNCTIONS
+
+#include "scopecontrol.h"
+
+int main(int argc, char** argv){
+  ViSession my_handle;
+  ViSession resource;
+
+  resource = resourceCreate();
+
+  my_handle = initScope(resource);
+
+  printf("\nall done!");
+
+  showinfo(my_handle);
+
+  fflush(stdout);
+
+
+  return 0;
 }

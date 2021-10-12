@@ -13,7 +13,7 @@ double mean(int n, double *x)
 	double y=0;
 	double m =0;
 
-	for(i=0; i<n; i++)
+	for(i=6; i<n; i++)
 	{
 		y = y + x[i];
 	}
@@ -29,7 +29,7 @@ double smoothed(int n, double *x, int w, double *ave)
 	int j;
 	double s;
 
-	for(i=0; i<n-4; i++)
+	for(i=6; i<n-4; i++)
 	{
 		ave[i]=0;
 		for(j=0;j<w;j++)
@@ -49,7 +49,7 @@ double RMS(int n, double *x)
 	double r=0;
 	double sum =0;
 
-	for(i=0;i<n;i++)
+	for(i=6;i<n;i++)
 	{
 		sum = sum + x[i]*x[i];
 	}

@@ -3,12 +3,12 @@
 #include "visa.h"
 
 //Try and bring in data from the oscilloscope
-    void convertScopedata(char *dataGot, double *dataDouble, double step)
+    void convertScopedata(char *dataGot, double *dataDouble, double dvolts)
     {
       int i=0;
       for(i=0; i<2500; i++)
       {
-       dataDouble[i] = dataGot[i] * step;
+       dataDouble[i] = dataGot[i] * dvolts * 10.0 / 256.0;
       }
       
     }

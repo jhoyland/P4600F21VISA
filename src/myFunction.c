@@ -23,7 +23,7 @@ double mean(double* data, int ndata)  //data array, number of data points
 double rms(double* data, int ndata)
 {
 	int i=0;
-	double sumSqr;
+	double sumSqr = 0.0;
   	for(i=0; i < ndata; i++)
   	{
   		sumSqr += data[i]*data[i];

@@ -96,7 +96,7 @@ int main(int argc, char const *argv[])
     //printf(volt_message);
 
     
-    //setScopewindow(scope_handle,1,1.0,0,500E-6,0); //<handle>, <CH>, <y scale>, <y pos>, <x scale>, <x pos>
+    setScopewindow(scope_handle,1,1.0,0,5E-3,0); //<handle>, <CH>, <y scale>, <y pos>, <x scale>, <x pos>
 
    
     //autosetScope(scope_handle);
@@ -107,19 +107,27 @@ int main(int argc, char const *argv[])
     //Try and bring in data from the oscilloscope
     char dataGot[2500];
     double dataDouble[2500];
-    double delta_volts=5.0; //Vpp is 5.0v in function generator
+    double delta_volts = 0.0; //Vpp is 5.0v in function generator
     double step = delta_volts/256.0;
  
     getScopedata(scope_handle, 1, dataGot);
 
-    convertScopedata(dataGot, dataDouble, step);
+    delta_volts = getScopevolts(scope_handle, 1);
+
+    convertScopedata(dataGot, dataDouble, delta_volts);
+
     printf("\nData converted\n");
     fflush(stdout);
-    
-    
+
     dataTofile(dataDouble, "scopedata", 2500);
     printf("Data file created\n");
     fflush(stdout);
+
+
+
+    double avg, rms, amp;
+    scanScopedata(dataDouble, &avg, &rms, &amp);
+
 
     viClose(scope_handle);
     viClose(fgHandle);

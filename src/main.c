@@ -77,6 +77,7 @@ int main(int argc, char** argv)
     double smoothed_data[length];
     double ampData[amplength];
     int j = 0;
+    printf("Hi\n");
 
     for(int i = start_freq; i <= end_freq; i += incr)
     {
@@ -93,10 +94,11 @@ int main(int argc, char** argv)
 
       smooth(data_double, length, windowSize, smoothed_data);
 
-      meanValue = mean(smoothed_data, length);
-      rmsValue = rms(smoothed_data, length, meanValue);
-      amplitudeValue = amplitude(rmsValue);
-      ampData[j] = amplitudeValue;
+      // meanValue = mean(smoothed_data, length);
+      // rmsValue = rms(smoothed_data, length, meanValue);
+      // amplitudeValue = amplitude(rmsValue);
+      // ampData[j] = amplitudeValue;
+      ampData[j] = calculateAmplitude(smoothed_data, length);
       j++;
     }
 

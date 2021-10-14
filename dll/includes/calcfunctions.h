@@ -8,5 +8,6 @@ double amplitude(double rms);
 void smooth(double* data, int length, int filterLength, double* smoothed);
 int adcConvert(char* data, double* converted, double volts);
 void writeToFile(char* name, double start_freq, double amplength, double* ampData, double incr);
+double calculateAmplitude(double* smoothed_data, int length);
 
 #endif

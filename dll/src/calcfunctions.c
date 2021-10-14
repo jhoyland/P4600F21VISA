@@ -104,3 +104,15 @@ void writeToFile(char* name, double start_freq, double amplength, double* ampDat
     fclose(outputfile);
 }
 
+double calculateAmplitude(double* smoothed_data, int length)
+{
+	double meanValue = 0.0;
+	double rmsValue = 0.0;
+	double amplitudeValue = 0.0;
+
+	meanValue = mean(smoothed_data, length);
+  	rmsValue = rms(smoothed_data, length, meanValue);
+  	amplitudeValue = amplitude(rmsValue);
+  	return amplitudeValue;
+}
+

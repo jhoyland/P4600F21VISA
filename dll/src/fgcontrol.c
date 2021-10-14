@@ -8,7 +8,7 @@
 
 //function to generate resource manager address space
 
-ViSession resourceCreate()
+ViSession resourceCreateFG()
 {
 	ViStatus status = VI_SUCCESS;
 	ViSession resource_manager;

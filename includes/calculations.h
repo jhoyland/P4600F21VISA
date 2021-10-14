@@ -1,10 +1,10 @@
 #ifndef __CALCULATIONS_H
 #define __CALCULATIONS_H
 
-void smoothing(double* dataArray, int n, int w, double* dataArraySmoothed);
-double mean(double* dataArraySmoothed, int n);
-double rootMeanSquare(double* dataArraySmoothed, int n);
-double amplitude(double* dataArraySmoothed, int n);
-
+void convertCurveToVoltage(int n, char* rawDataArray, float scale, double* voltages);
+void smoothing(double* voltages, int n, int w, double* voltagesSmoothed);
+double mean(double* voltagesSmoothed, int n);
+double rootMeanSquare(double* voltagesSmoothed, int n);
+double amplitude(double* voltagesSmoothed, int n);
 
 #endif

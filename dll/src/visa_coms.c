@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "randdata.h"
-#include "signal_analysis.h"
 #include "visa.h"
 #include <time.h>
 #include <windows.h>
@@ -36,4 +34,27 @@ void OSC_gather(ViSession scope_handle,unsigned char * OSC_data) {
   viPrintf(scope_handle,"CURVE?\n");
   viScanf(scope_handle,"%t",OSC_data);
   Sleep(2500);
+}
+
+
+void OSC_setup (ViStatus status, ViSession * resource_manager, ViFindList resource_list, long unsigned int resource_num, char * description,ViSession * scope_handle) {
+  status = viFindRsrc(*resource_manager,"USB[0-9]::0x0699?*INSTR",&resource_list,&resource_num,description);
+  if(status!=VI_SUCCESS){
+    exit(1);
+  }
+  status=viOpen(*resource_manager,description,VI_NULL,VI_NULL,scope_handle);
+  if(status!=VI_SUCCESS){
+    exit(1);
+  }
+}
+
+void FG_setup (ViStatus status, ViSession * resource_manager, ViFindList resource_list, long unsigned int resource_num, char * description,ViSession * functiongen_handle) {
+  status = viFindRsrc(*resource_manager,"USB[0-9]::0x1AB1?*INSTR",&resource_list,&resource_num,description);
+  if(status!=VI_SUCCESS){
+    exit(1);
+  }
+  status=viOpen(*resource_manager,description,VI_NULL,VI_NULL,functiongen_handle);
+  if(status!=VI_SUCCESS){
+    exit(1);
+  }
 }

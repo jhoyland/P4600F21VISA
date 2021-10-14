@@ -112,3 +112,7 @@ void setScale(ViSession scope_handle, int channel, int scale)
 	viPrintf(scope_handle, "CH%d:SCA %d \n",channel,scale);
 
 }
+
+// function to autoset
+
+// function to get amp and RMS (or add to data file)

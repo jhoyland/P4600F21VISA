@@ -95,7 +95,7 @@ void getData(double *ddata, int ddatalength,ViSession scope_handle, int channel,
   	// turn data into double to convert to voltage values
   	//double ddata[2500];
 
-  	for(i=0; i<sizeof(ddatalength); i++)
+  	for(i=0; i<ddatalength; i++)
   	{
     	ddata[i] = (scale/255.0) * data[i];
     	fprintf(datafile,"%f \n",ddata[i]);

@@ -195,6 +195,7 @@ fflush(stdout);
 #include "scopecontrol.h"
 
 int main(int argc, char** argv){
+  //TEST SCOPE FUNCTIONS
   ViSession my_handle;
   ViSession resource;
 
@@ -205,6 +206,11 @@ int main(int argc, char** argv){
   printf("\nall done!");
 
   showinfo(my_handle);
+  setScale(my_handle,1,10);
+  //viPrintf(my_handle, "CH1:SCA 1 \n");
+
+  double ddata[2500];
+  getData(ddata,2500,my_handle, 1,5);
 
   fflush(stdout);
 

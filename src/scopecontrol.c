@@ -60,7 +60,7 @@ ViSession initScope(ViSession resource_manager)
 
 
 // function to show info from a certain handle
-void showinfo(handle)
+void showinfo(ViSession handle)
 {
     char returned_message[128];
   	printf("\n");
@@ -73,6 +73,42 @@ void showinfo(handle)
 
 }
 
-//function to create a file of data with voltage values getData
+//function to create a file of data with voltage values getData, returns data values as double
 
-void getData()
+void getData(double *ddata, int ddatalength,ViSession scope_handle, int channel, int scale)
+{
+	viPrintf(scope_handle, "DATA:SOURCE CH%d\nDATA:ENC BINARY\nDATA:WIDTH 1\nDATA:START 0\nDATA:STOP 2500\n", channel);
+	char data[ddatalength];
+  	viPrintf(scope_handle, "CURVe?\n");
+  	viScanf(scope_handle, "%t", data);
+  	int i;
+  	// this code works but is not in voltage values
+  	//read through loop
+  	//for(i=0; i<2500; i++)
+  	//{
+  	//  printf("%d \n",data[i]);
+  	//}
+
+  	//print data to a file 
+
+  	FILE* datafile = fopen("curvedata.dat","w");
+  	// turn data into double to convert to voltage values
+  	//double ddata[2500];
+
+  	for(i=0; i<sizeof(ddatalength); i++)
+  	{
+    	ddata[i] = (scale/255.0) * data[i];
+    	fprintf(datafile,"%f \n",ddata[i]);
+  	}
+
+  	fclose(datafile);
+}
+
+//function to set the time interval 
+
+void setScale(ViSession scope_handle, int channel, int scale)
+{
+	//autoset and then set scale
+	viPrintf(scope_handle, "CH%d:SCA %d \n",channel,scale);
+
+}

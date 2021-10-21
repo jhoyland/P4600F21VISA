@@ -1,23 +1,30 @@
 # Compiler and linker options
 CC        = gcc
-CFLAGS    = -c -v -g
-LDFLAGS   = -shared
+CFLAGS    = -c -Wall -g
+LDFLAGS   = -shared -v
 
-HOMEDIR   = /c/msys64/home/EPsajd/P4600F21VISA/P4600F21VISA
+MINGW_ENV = mingw64
+
+HOMEDIR   = /c/msys64/home/$(USER)/P4600F21VISA
 # User directories to search
 BUILDDIR  = $(HOMEDIR)/dll/build
 INCDIR    = $(HOMEDIR)/dll/includes
 SRCDIR    = $(HOMEDIR)/dll/src
+SWIGDIR		= $(HOMEDIR)/dll/swig
+PYDIR			= $(HOMEDIR)/python
+
+ANACONDAPATH = /c/Users/$(USER)/Anaconda3
+#ANACONDAPATH = /c/ProgramData/Anaconda3
 
 
 # 3rd Party library directories to search
-LIBDIR    = /mingw64/lib $(HOMEDIR)/dll/lib
-LIBINCDIR = $(HOMEDIR)/dll/includes
+LIBDIR    = /$(MINGW_ENV)/lib $(HOMEDIR)/dll/lib $(ANACONDAPATH)/libs
+LIBINCDIR = $(HOMEDIR)/dll/includes $(ANACONDAPATH)/include
 
 # List sources, object files and libraries to be used
 SOURCES   = $(wildcard $(SRCDIR)/*.c )
 OBJECTS   = $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SOURCES))
-LIBRARIES = visa64
+LIBRARIES = visa64 python38
 
 # Create command line arguments
 LIBCMD    = $(addprefix -l,$(LIBRARIES))
@@ -27,12 +34,36 @@ INCCMD    = $(addprefix -I,$(INCDIR) $(LIBINCDIR))
 # The final executable name
 TARGET    = datalink
 
+
 # The rules
 
 all: $(SOURCES) $(TARGET)
 
+# Compile the DLL object files
+
 $(BUILDDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) $(INCCMD) $< -o $@
 
-$(TARGET): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) $(LIBDIRCMD) $(LIBCMD) -o $(HOMEDIR)/$@.dll
+# Link the DLL
+
+$(HOMEDIR)/$(TARGET).dll: $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) $(LIBDIRCMD) $(LIBCMD) -o $@
+
+# Create the swig wrappers from the interface
+
+$(SWIGDIR)/$(TARGET)_wrap.c: $(INCLUDES) $(SWIGDIR)/$(TARGET).i
+	swig -python -py3 -outdir $(PYDIR) $(INCCMD) -o $@ $(SWIGDIR)/$(TARGET).i
+
+# Compile the swig wrappers
+
+$(SWIGDIR)/$(TARGET)_wrap.o: $(SWIGDIR)/$(TARGET)_wrap.c
+	$(CC) $(CFLAGS) $(INCCMD) $(SWIGDIR)/$(TARGET)_wrap.c -o $@
+
+# Link the wrapped python library
+
+$(PYDIR)/_$(TARGET).pyd: $(OBJECTS) $(SWIGDIR)/$(TARGET)_wrap.o
+	$(CC) $(LDFLAGS) $(OBJECTS) $(SWIGDIR)/$(TARGET)_wrap.o $(LIBDIRCMD) $(LIBCMD) -o $@
+
+swig: $(PYDIR)/_$(TARGET).pyd
+
+dll: $(HOMEDIR)/$(TARGET).dll

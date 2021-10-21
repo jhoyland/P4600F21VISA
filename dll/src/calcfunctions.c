@@ -3,6 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include "calcfunctions.h"
+#include "scope_func_commands.h"
 #include "visa.h"
 
 
@@ -116,3 +117,7 @@ double calculateAmplitude(double* smoothed_data, int length)
   	return amplitudeValue;
 }
 
+double theController(double start_freq, double end_freq, double incr)
+{
+	
+}

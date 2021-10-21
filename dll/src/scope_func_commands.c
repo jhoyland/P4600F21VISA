@@ -6,6 +6,77 @@
 #include "scope_func_commands.h"
 #include "visa.h"
 
+ViSession resourceManager()
+{
+	ViStatus status;
+	ViSession resource_manager;
+	status = viOpenDefaultRM(&resource_manager);//opens resource manager
+
+	if(status != VI_SUCCESS)
+	{
+	exit(1);
+	}
+
+	else return resource_manager;
+}
+
+ViSession findOpenScope(ViSession resource_manager)
+{
+	ViStatus status = VI_SUCCESS;
+	ViSession scope_handle;
+	ViFindList resource_list;
+	long unsigned int num_inst;
+	char description[VI_FIND_BUFLEN];
+
+	status = viFindRsrc(resource_manager, "USB[0-9]::0x0699?*INSTR", &resource_list, &num_inst, description);
+    if(status != VI_SUCCESS)
+    {
+      printf("couldn't find the Oscilloscope");
+      fflush(stdout);
+      exit(1);
+    }
+
+    status = viOpen(resource_manager, description, VI_NULL, VI_NULL, &scope_handle);
+    if(status != VI_SUCCESS)
+    {
+      printf("couldn't connect to oscilloscope");
+      fflush(stdout);
+      exit(1);
+    }
+
+    else return scope_handle;
+    printf("Opened oscilloscope\n");
+
+}
+
+ViSession findOpenFuncgen(ViSession resource_manager)
+{
+	ViStatus status = VI_SUCCESS;
+	ViSession func_handle;
+	ViFindList resource_list;
+	long unsigned int num_inst;
+	char description[VI_FIND_BUFLEN];
+
+	status = viFindRsrc(resource_manager, "USB[0-9]::0x1AB1?*INSTR", &resource_list, &num_inst, description);
+    if(status != VI_SUCCESS)
+    {
+      printf("couldn't find the function generator");
+      fflush(stdout);
+      exit(1);
+    }
+    status = viOpen(resource_manager, description, VI_NULL, VI_NULL, &func_handle);
+    if(status != VI_SUCCESS)
+    {
+      printf("couldn't connect to function generator");
+      fflush(stdout);
+      exit(1);
+    }
+
+    else return func_handle;
+
+    printf("Opened function generator\n");
+}
+
 double grabVoltsDiv(ViSession scope_handle)
 {
 	char returned_message[128];

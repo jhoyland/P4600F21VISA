@@ -11,18 +11,14 @@ int main(int argc, char** argv) {
   ViStatus status = VI_SUCCESS;
   ViSession resource_manager;
   ViSession scope_handle, functiongen_handle;
-  status = viOpenDefaultRM(&resource_manager);
-  ViFindList resource_list;
-  long unsigned int resource_num;
-  char description[VI_FIND_BUFLEN];
 
   if(status!=VI_SUCCESS){
     exit(1);
   }
   else{  
 
-    OSC_setup (status,&resource_manager,resource_list,resource_num,description,&scope_handle);
-    FG_setup (status, &resource_manager,resource_list,resource_num,description,&functiongen_handle);
+    OSC_setup (status,&resource_manager,&scope_handle);
+    FG_setup (status, &resource_manager,&functiongen_handle);
 
     char returned_message[128];
 

@@ -4,6 +4,7 @@
 #include <time.h>
 #include <windows.h>
 #include <math.h>
+#include "visa_coms.h"
 
 float SA_Mean(int n, float * data){
 	float Mean = 0.0;
@@ -67,4 +68,24 @@ void V_vs_F_datasave (int F_array_size, float * F_array, float * Vamp_array,char
     }
     fflush(stdout);
     fclose(outputfile1);
+}
+
+float data_loop (int FG_channel,int OSC_channel,float F_now, float phase_offset,float V_offset,float fg_volt,int osc_resol,int move_avg_window) {
+    float vertical_scale;
+    int OSC_data_size = osc_resol;
+    int true_OSC_data_size=OSC_data_size-6;
+    unsigned char OSC_data[OSC_data_size];
+    float voltage_data[true_OSC_data_size];
+	FG_parameters(functiongen_handle,FG_channel,F_now,fg_volt,V_offset,phase_offset);
+	OSC_setup1(scope_handle,OSC_channel,osc_resol);
+	vertical_scale = OSC_setup2(scope_handle,OSC_channel);
+	OSC_gather(scope_handle,OSC_data);
+	OSC_data_to_voltage(OSC_data_size, vertical_scale, OSC_data, voltage_data);
+	int smooth_data_size=true_OSC_data_size-move_avg_window+1;
+	float smooth_voltage_data[smooth_data_size];
+	SA_smooth(smooth_data_size,move_avg_window,voltage_data,smooth_voltage_data);
+	float mean_smooth = SA_Mean(smooth_data_size,smooth_voltage_data);
+	float rms_smooth = SA_RMS(smooth_data_size,smooth_voltage_data,mean_smooth);
+	float Vamp_array = SA_Amplitude(rms_smooth);
+    return Vamp_array
 }

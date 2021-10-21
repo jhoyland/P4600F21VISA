@@ -37,8 +37,11 @@ void OSC_gather(ViSession scope_handle,unsigned char * OSC_data) {
 }
 
 
-void OSC_setup (ViStatus status, ViSession * resource_manager, ViFindList resource_list, long unsigned int resource_num, char * description,ViSession * scope_handle) {
-  status = viFindRsrc(*resource_manager,"USB[0-9]::0x0699?*INSTR",&resource_list,&resource_num,description);
+void OSC_setup (ViStatus status, ViSession * resource_manager, ViSession * scope_handle) {
+  ViFindList resource_list;
+  long unsigned int resource_num;
+  char description[VI_FIND_BUFLEN];
+  status = viFindRsrc(*resource_manager,"USB[0-9]::0x0699?*INSTR", &resource_list,&resource_num,description);
   if(status!=VI_SUCCESS){
     exit(1);
   }
@@ -48,7 +51,10 @@ void OSC_setup (ViStatus status, ViSession * resource_manager, ViFindList resour
   }
 }
 
-void FG_setup (ViStatus status, ViSession * resource_manager, ViFindList resource_list, long unsigned int resource_num, char * description,ViSession * functiongen_handle) {
+void FG_setup (ViStatus status, ViSession * resource_manager, ViSession * functiongen_handle) {
+  ViFindList resource_list;
+  long unsigned int resource_num;
+  char description[VI_FIND_BUFLEN];
   status = viFindRsrc(*resource_manager,"USB[0-9]::0x1AB1?*INSTR",&resource_list,&resource_num,description);
   if(status!=VI_SUCCESS){
     exit(1);
@@ -57,4 +63,16 @@ void FG_setup (ViStatus status, ViSession * resource_manager, ViFindList resourc
   if(status!=VI_SUCCESS){
     exit(1);
   }
+}
+
+ViSession resource_manager_setup(){
+  ViStatus status;
+  ViSession resource_manager;
+  status = viOpenDefaultRM(&resource_manager);
+  return resource_manager;
+}
+
+void Intrument_turnoff (ViSession * functiongen_handle, ViSession * scope_handle) {
+  viClose(scope_handle);
+  viClose(functiongen_handle);
 }

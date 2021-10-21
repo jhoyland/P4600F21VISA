@@ -11,13 +11,13 @@ SRCDIR    = ./src
 HOMEDIR   = /c/msys64/home/ENg/week3/P4600F21VISA
 
 # 3rd Party library directories to search
-LIBDIR    = /mingw64/lib $(HOMEDIR)/lib
-LIBINCDIR = $(HOMEDIR)/includes
+LIBDIR    = /mingw64/lib $(HOMEDIR)/lib $(HOMEDIR)
+LIBINCDIR = $(HOMEDIR)/includes $(HOMEDIR)/dll/includes
 
 # List sources, object files and libraries to be used
 SOURCES   = $(wildcard $(SRCDIR)/*.c )
 OBJECTS   = $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SOURCES))
-LIBRARIES = visa64
+LIBRARIES = visa64 datalink
 
 # Create command line arguments
 LIBCMD    = $(addprefix -l,$(LIBRARIES))

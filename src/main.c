@@ -125,7 +125,7 @@ int main(int argc, char const *argv[])
 
 
 
-    double avg, rms, amp;
+    double avg=0.0, rms=0.0, amp=0.0;
     scanScopedata(dataDouble, &avg, &rms, &amp);
 
 

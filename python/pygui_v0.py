@@ -47,11 +47,19 @@ label_Ci =  tk.Label(ctrlframe,text = "Intervals", width=5)
 
 
 label_D = tk.Label(ctrlframe,text = "Autofocus Scope", width=5)
-label_E = tk.Label(ctrlframe,text = "Display Data", width=5)
+label_E = tk.Button(ctrlframe,text = "Display Data", width=5, command = DataGen
 
-var_A = tk.StringVar(value="0")
-var_B = tk.StringVar(value="0")
-var_C = tk.StringVar(value="0")
+#var_A = tk.StringVar(value="0")
+#var_B = tk.StringVar(value="0")
+#var_Cs = tk.StringVar(value="0")
+#var_Ce = tk.StringVar(value="0")
+#var_Ci = tk.StringVar(value="0")
+#var_D = tk.StringVar(value="0")
+
+def DataGen():
+    print("Hello from Datagen")
+    #this function should generate:
+    #List of RMS, Average, Amplitude, and a Frequency vs. Amp Graph
 
 tk.mainloop() #starts the window
 

@@ -24,70 +24,26 @@ int main(int argc, char const *argv[])
   ViStatus status = VI_SUCCESS;
   ViSession resource_manager;
   ViSession scope_handle, fgHandle;
-  ViFindList resource_list;
-  long unsigned int num_inst;
-  char description[VI_FIND_BUFLEN];
 
-  unsigned int channel = 1;
+  unsigned int channel = 1;  //channel being used
   double volts = 1.0;
 
-  status = viOpenDefaultRM(&resource_manager);
-  if(status != VI_SUCCESS)
-  {
-    //Do something about it
-    printf("Whoa");
-    exit(1);
-  }
-  else
-  {
-    //continue finding the scope
-    status = viFindRsrc(resource_manager,"USB[0-9]::0x0699?*INSTR",&resource_list,&num_inst,description);
-    if(status != VI_SUCCESS)
-    {
-      printf("could not find any scopes");
-      fflush(stdout);
-      exit(1);
-    }
+  resource_manager = initRM();    //initialize resource manager
 
-    status = viOpen(resource_manager,description,VI_NULL,VI_NULL,&scope_handle);
-    if(status != VI_SUCCESS)
-    {
-      printf("could not connect to scope");
-      fflush(stdout);
-      exit(1);
-    }
-
-    //continue finding the function generator
-    status = viFindRsrc(resource_manager,"USB[0-9]::0x1AB1?*INSTR",&resource_list,&num_inst,description);
-    if(status != VI_SUCCESS)
-    {
-      printf("could not find any function generator");
-      fflush(stdout);
-      exit(1);
-    }
-
-    status = viOpen(resource_manager,description,VI_NULL,VI_NULL,&fgHandle);
-    if(status != VI_SUCCESS)
-    {
-      printf("could not connect to function generator");
-      fflush(stdout);
-      exit(1);
-    }
-
-
-
+  scope_handle = initScope(resource_manager);
+  fgHandle = initFG(resource_manager);
 
 // Function generator commands goes here:::::::::::::::::::::::::::::::
-    fgInfo(fgHandle);
+  fgInfo(fgHandle);
 
-    setSinwave(fgHandle,1,100,5,0,0); //<CH:1>, <freq>, <amplitude>, <offset>, <phase>
-    displayWave(fgHandle,1); //<CH:1>
+  setSinwave(fgHandle,1,100,5,0,0); //<CH:1>, <freq>, <amplitude>, <offset>, <phase>
+  displayWave(fgHandle,1); //<CH:1>
 
     //beep(fgHandle);
     
     
 // Oscilloscope commands goes here:::::::::::::::::::::::::::::::::
-    scopeInfo(scope_handle);
+  scopeInfo(scope_handle);
 
 
 
@@ -96,42 +52,39 @@ int main(int argc, char const *argv[])
     //printf(volt_message);
 
     
-    setScopewindow(scope_handle,1,1.0,0,5E-3,0); //<handle>, <CH>, <y scale>, <y pos>, <x scale>, <x pos>
+  setScopewindow(scope_handle,1,1.0,0,5E-3,0); //<handle>, <CH>, <y scale>, <y pos>, <x scale>, <x pos>
 
    
     //autosetScope(scope_handle);
-    
-    
-
 
     //Try and bring in data from the oscilloscope
-    char dataGot[2500];
-    double dataDouble[2500];
-    double delta_volts = 0.0; //Vpp is 5.0v in function generator
-    double step = delta_volts/256.0;
+  char dataGot[2500];
+  double dataDouble[2500];
+  double delta_volts = 0.0; //Vpp is 5.0v in function generator
+  double step = delta_volts/256.0;
  
-    getScopedata(scope_handle, 1, dataGot);
+  getScopedata(scope_handle, 1, dataGot);
 
-    delta_volts = getScopevolts(scope_handle, 1);
+  delta_volts = getScopevolts(scope_handle, 1);
 
-    convertScopedata(dataGot, dataDouble, delta_volts);
+  convertScopedata(dataGot, dataDouble, delta_volts);
 
-    printf("\nData converted\n");
-    fflush(stdout);
+  printf("\nData converted\n");
+  fflush(stdout);
 
-    dataTofile(dataDouble, "scopedata", 2500);
-    printf("Data file created\n");
-    fflush(stdout);
-
-
-
-    double avg=0.0, rms=0.0, amp=0.0;
-    scanScopedata(dataDouble, &avg, &rms, &amp);
+  dataTofile(dataDouble, "scopedata", 2500);
+  printf("Data file created\n");
+  fflush(stdout);
 
 
-    viClose(scope_handle);
-    viClose(fgHandle);
-  }
+
+  double avg=0.0, rms=0.0, amp=0.0;
+  scanScopedata(dataDouble, &avg, &rms, &amp);
+
+
+  viClose(scope_handle);
+  viClose(fgHandle);
+
 
   return 0;
 }

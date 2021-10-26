@@ -3,6 +3,7 @@
 #include <windows.h>
 #include "visa.h"
 #include "myFunction.h"
+#include "oscope.h"
 
 //Oscilloscop functions
 ViStatus autosetScope(ViSession scope_handle)
@@ -51,12 +52,17 @@ ViStatus scopeInfo(ViSession scope_handle)
     return status;
 }
 
-ViStatus getScopedata(ViSession scope_handle, int channel, char *dataGot)
+void getScopedata(ViSession scope_handle, int channel, char *dataGot)
 {
 	ViStatus status = VI_SUCCESS;
 	status = viPrintf(scope_handle, "DATa:SOUrce CH%d\n DATa:ENCdg RIBinary\n DATa:STARt 1\n DATa:STOP 2500\n CURVe?\n",channel);
     status = viScanf(scope_handle,"%t", dataGot);
-    return status;
+    if(status != VI_SUCCESS)
+  	{
+    	printf("could not get data");
+    	fflush(stdout);
+    	exit(1);
+  	}
 }
 
 double getScopevolts(ViSession scope_handle, int channel) //grabbing volts/div
@@ -68,6 +74,12 @@ double getScopevolts(ViSession scope_handle, int channel) //grabbing volts/div
 	status = viPrintf(scope_handle, "CH%d:VOLts?\n", channel);
 	status = viScanf(scope_handle,"%t", volt);
 	volts = strtod(volt, &eptr);
+	if(status != VI_SUCCESS)
+  	{
+    	printf("could not get volts");
+    	fflush(stdout);
+    	exit(1);
+  	}
 
 	return volts;
 }
@@ -86,4 +98,47 @@ void scanScopedata(double *dataDouble, double *avg, double *rootmeansquare, doub
 	printf("RMS: %f\n",*rootmeansquare);
 	printf("AMP: %f\n",*avg);
 	fflush(stdout);
+}
+
+ViSession initRM()
+{
+	ViStatus status = VI_SUCCESS;
+	ViSession resource_manager;
+	status = viOpenDefaultRM(&resource_manager);
+
+	if(status != VI_SUCCESS)
+  	{
+    	printf("could not create resource manager");
+    	fflush(stdout);
+    	exit(1);
+  	}
+
+	return resource_manager;
+}
+
+ViSession initScope(ViSession RM)
+{
+	ViStatus status = VI_SUCCESS;
+	ViSession scope_handle;
+	ViFindList resource_list;
+	long unsigned int num_inst;
+	char description[VI_FIND_BUFLEN];
+
+	status = viFindRsrc(RM,"USB[0-9]::0x0699?*INSTR",&resource_list,&num_inst,description);
+	if(status != VI_SUCCESS)
+ 	 {
+    	printf("could not find any scopes");
+    	fflush(stdout);
+    	exit(1);
+ 	 }
+
+	status = viOpen(RM,description,VI_NULL,VI_NULL,&scope_handle);
+	if(status != VI_SUCCESS)
+  	{
+    	printf("could not connect to scope");
+    	fflush(stdout);
+    	exit(1);
+ 	}
+
+	return scope_handle;
 }

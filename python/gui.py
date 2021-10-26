@@ -4,13 +4,16 @@ Spyder Editor
 
 This is a temporary script file.
 """
-
+import datalink
 import tkinter as tk
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 import numpy as np
+
+RM, FG, OS =  initialize()
+getVolt(OS, 1)
 
 root = tk.Tk()
 root.wm_title("Bob")
@@ -60,6 +63,10 @@ canvas.get_tk_widget().pack(side=tk.RIGHT)
 x = np.arange(-10,10,0.1)
 
 
+
+
+
+
 def calc_poly():
     A = float(var_A.get())
     B = float(var_B.get())
@@ -79,5 +86,17 @@ calc_button = tk.Button(ctrlframe,text="Calculate",command=calc_poly)
 calc_button.grid(row=4,column=0,columnspan=2,sticky="ew")
 
 #var_x.trace('w',calc_slider)
+
+
+def getVolt(OS, channel):
+    datalink.getScopevolts(OS, channel)
+
+def initialize():
+    RM = datalink.initRM()
+    FG = datalink.initFG(RM)
+    OS = datalink.initScope(RM)
+
+    return RM, FG, OS
+
 
 tk.mainloop()

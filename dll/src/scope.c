@@ -4,23 +4,23 @@
 #include <stdio.h>
 #include "scope.h"
 
-ViStatus findscope(ViSession rm, ViSession* handle, int channel)
+ViSession findscope(ViSession rm, int channel)
 {
 ViStatus status = VI_SUCCESS;
-//ViSession scope_handle;
+ViSession scope_handle;
 ViFindList resource_list;
 char returned_message[128];
-unsigned int num_inst;
+unsigned int num_inst; 
 char description[VI_FIND_BUFLEN];
 
-status = viFindRsrc(rm,"USB[0-9]::0x0699?*INSTR",resource_list,&num_inst,description);
+status = viFindRsrc(rm,"USB[0-9]::0x0699?*INSTR",&resource_list,&num_inst,description);
   if(status != VI_SUCCESS)
     {
       printf("couldn't find any instrument");
       fflush(stdout);
       exit(1);
     }
-  status = viOpen(rm,description,VI_NULL,VI_NULL,handle);
+  status = viOpen(rm,description,VI_NULL,VI_NULL,&scope_handle);
   if(status != VI_SUCCESS)
     {
       printf("couldn't connect to scope");
@@ -29,12 +29,12 @@ status = viFindRsrc(rm,"USB[0-9]::0x0699?*INSTR",resource_list,&num_inst,descrip
     }
 
   printf("\nOpened Scope");
-  viPrintf(handle,"*IDN?\n");
-  viScanf(handle,"%t",returned_message);
+  viPrintf(scope_handle,"*IDN?\n");
+  viScanf(scope_handle,"%t",returned_message);
 
   printf(returned_message);
   fflush(stdout);
-  return status;
+  return scope_handle;
 
  }
 

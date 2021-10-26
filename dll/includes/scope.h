@@ -1,4 +1,4 @@
 #include "visa.h"
 
-ViStatus findscope(ViSession* rm, ViSession* handle, int channel);
+ViSession findscope(ViSession rm, int channel);
 void getdata(ViSession scope_handle, int channel, char *data);

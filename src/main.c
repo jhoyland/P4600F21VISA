@@ -15,8 +15,8 @@
 
 */
 
-
-int main(int argc, char** argv)
+ 
+int main(int argc, char** argv) 
 {
 ViSession scope_handle;
 ViSession fun_generator;
@@ -24,25 +24,26 @@ ViSession resource_manager;
 ViStatus status = VI_SUCCESS;
 char data[2500];
 double ave[2496];
+int i;
 double a;
 double m;
 double rms;
-//char returned_message[128];
 double data_voltage[2500];
 status = viOpenDefaultRM(&resource_manager);
 
-
 fun_generator = findgen(resource_manager, 1);
 // Controlling Function Generator from PC
-  setSinWave(fun_generator,1,10,100,0,0); //Set the waveform of CH1 to sine waveform with 100Hz frequency, 10Vpp amplitude, 0VDC offset and 0° start phase
-  viPrintf(fun_generator,":OUTP1 ON\n");  
+ setSinWave(fun_generator,1,10,100,0,0); //Set the waveform of CH1 to sine waveform with 100Hz frequency, 10Vpp amplitude, 0VDC offset and 0° start phase
+ viPrintf(fun_generator,":OUTP1 ON\n");  
 // for oscilloscope
-// findscope(&resource_manager,&scope_handle, 1);
-
-//   getdata(scope_handle,1, data);
-//   getvoltage(data,2500, 2, data_voltage);
-//   fflush(stdout);
-       
+ scope_handle = findscope(resource_manager, 1);
+ getdata(scope_handle,1, data);
+ for(i=0;i<10;i++)
+ {
+  printf("%c\n",data);
+ }
+ getvoltage(data,2500, 2, data_voltage);
+ fflush(stdout);
 //   smoothed(2500,data_voltage,5,ave);
 //   m = mean(2500,data_voltage);
 //   rms = RMS(2500,data_voltage);
@@ -50,7 +51,7 @@ fun_generator = findgen(resource_manager, 1);
 //   printf("\nRMS Value =%0.5f",rms);
 //   printf("\nMean Value =%0.5f",m);
 //   printf("\nAmplitude =%f",a);
-// viClose(fun_generator);
+viClose(fun_generator);
 viClose(scope_handle);
 }
 
@@ -64,7 +65,7 @@ void getvoltage(char *data, int n, double v, double* data_voltage)
    {
     data_double[i]=data[i];
     data_voltage[i] = data_double[i]*10.0*v/255.0;
-    fprintf(outputfile,"%f\n",data_double[i]);
+    fprintf(outputfile,"%f\n",data_voltage[i]);
    }
   fclose(outputfile);
   

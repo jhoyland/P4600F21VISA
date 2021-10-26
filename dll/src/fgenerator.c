@@ -44,10 +44,10 @@ else
 }return fun_generator;
 }
 
-ViStatus setSinWave(ViSession handle, int channel, double amplitude, double frequency, double offset, double phase)
+ViStatus setSinWave(ViSession gen, int channel, double amplitude, double frequency, double offset, double phase)
 {
 	ViStatus status = VI_SUCCESS;
-	status = viPrintf(handle,"SOURCE%d:APPLY:SIN %f, %f, %f, %f\n",channel,frequency, amplitude, offset, phase);
+	status = viPrintf(gen,"SOURCE%d:APPLY:SIN %f, %f, %f, %f\n",channel,frequency, amplitude, offset, phase);
 	return status;
 }
 

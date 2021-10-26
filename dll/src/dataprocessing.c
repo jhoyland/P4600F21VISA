@@ -10,7 +10,8 @@
 */
 
 // Mean function:
-double mean(double num[], int n)
+// where int n is the length of the array 
+float mean(float num[], int n)
 {
 	double mean = 0, sum=0;
 	int i = 0;

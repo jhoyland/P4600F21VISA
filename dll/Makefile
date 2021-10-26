@@ -6,7 +6,7 @@ LDFLAGS   = -shared -v
 MINGW_ENV = mingw64
 PYVERSION = 37
 
-HOMEDIR   = /c/msys64/home/EPsajd/P4600F21VISA
+HOMEDIR   = /c/msys64/home/EPsajd/P4600F21VISA/P4600F21VISA
 # User directories to search
 BUILDDIR  = $(HOMEDIR)/dll/build
 INCDIR    = $(HOMEDIR)/dll/includes
@@ -15,7 +15,7 @@ SWIGDIR		= $(HOMEDIR)/dll/swig
 PYDIR			= $(HOMEDIR)/python
 
 #ANACONDAPATH = /c/Users/$(USER)/Anaconda3
-ANACONDAPATH = /c/ProgramData/EPsajd/Anaconda3
+ANACONDAPATH = /c/ProgramData/Anaconda3
 
 
 # 3rd Party library directories to search

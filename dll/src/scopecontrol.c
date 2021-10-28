@@ -75,7 +75,7 @@ void showinfo(ViSession handle)
 
 //function to create a file of data with voltage values getData, returns data values as double
 
-void getData(double *ddata, int ddatalength,ViSession scope_handle, int channel, int scale)
+void getData(double *ddata, int ddatalength, ViSession scope_handle, int channel, int scale)
 {
 	viPrintf(scope_handle, "DATA:SOURCE CH%d\nDATA:ENC BINARY\nDATA:WIDTH 1\nDATA:START 0\nDATA:STOP 2500\n", channel);
 	char data[ddatalength];
@@ -110,9 +110,11 @@ void setScale(ViSession scope_handle, int channel, int scale)
 {
 	//autoset and then set scale
 	viPrintf(scope_handle, "CH%d:SCA %d \n",channel,scale);
-
 }
 
 // function to autoset
+void Scopeset(ViSession scope_handle)
+{
+	viPrintf(ViSession scope_handle, "AUTOSet EXECute");
+}
 
-// function to get amp and RMS (or add to data file)

@@ -36,6 +36,7 @@ ViSession initFG(ViSession resource_manager)
     if(status != VI_SUCCESS)
     {
       printf("Could not locate any instruments\n");
+      printf("Did you generate a resource manager?\n")
       fflush(stdout);
       exit(1);
     }
@@ -65,4 +66,9 @@ ViStatus setSinWave(ViSession handle, double channel, double amp, double freq, d
 	viPrintf(handle,"SOURCE%d:APPLY:SIN%f,%f,%f,%f\n",channel, freq, amp, offset, phase);
 	ViStatus status = VI_SUCCESS;
 	return status;
+}
+
+ViStatus setFreq(ViSession handle, double channel, double freq)
+{
+  
 }

@@ -4,7 +4,6 @@
 #include <time.h>
 #include <windows.h>
 #include "visa.h"
-#include "convertScopedata.h"
 #include "myFunction.h"
 #include "dataTofile.h"
 #include "fgenerator.h"
@@ -72,7 +71,7 @@ int main(int argc, char const *argv[])
   printf("\nData converted\n");
   fflush(stdout);
 
-  dataTofile(dataDouble, "scopedata", 2500);
+  dataTofile(dataDouble, "scopedata", 2494);
   printf("Data file created\n");
   fflush(stdout);
 
@@ -88,6 +87,8 @@ int main(int argc, char const *argv[])
 
   return 0;
 }
+
+
 
 
 /*int main(int argc, char** argv)

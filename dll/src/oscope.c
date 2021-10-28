@@ -84,21 +84,33 @@ double getScopevolts(ViSession scope_handle, int channel) //grabbing volts/div
 	return volts;
 }
 
+//Try and bring in data from the oscilloscope
+void convertScopedata(char *dataGot, double *dataDouble, double dvolts)
+{
+ int i=0;
+ for(i=6; i<2500; i++)
+   {
+    dataDouble[i-6] = dataGot[i] * dvolts * 10.0 / 256.0;
+   }
+      
+}
+
 
 void scanScopedata(double *dataDouble, double *avg, double *rootmeansquare, double *amp)
 {
 
-	*avg = mean(dataDouble, 2500);
+	*avg = mean(dataDouble, 2494);
 
-	*rootmeansquare = rms(dataDouble, 2500);
+	*rootmeansquare = rms(dataDouble, *avg, 2494);
 
 	*amp = amplitude(*rootmeansquare, *avg);
 
 	printf("Mean: %f\n",*avg);
 	printf("RMS: %f\n",*rootmeansquare);
-	printf("AMP: %f\n",*avg);
+	printf("AMP: %f\n",*amp);
 	fflush(stdout);
 }
+
 
 ViSession initRM()
 {

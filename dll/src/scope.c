@@ -39,7 +39,7 @@ status = viFindRsrc(rm,"USB[0-9]::0x0699?*INSTR",&resource_list,&num_inst,descri
  }
 
 void getdata(ViSession scope_handle, int channel, char *data)
-{
+{  
   viPrintf(scope_handle,"DATA:SOURCE CH%d\n",channel);
   viPrintf(scope_handle,"DATA:ENC RIBINARY\n");
   viPrintf(scope_handle,"DATA:WIDTH 1\n");
@@ -50,3 +50,17 @@ void getdata(ViSession scope_handle, int channel, char *data)
   viScanf(scope_handle,"%t",data);
 }
 
+void getvoltage(char *data, int n, double v, double* data_voltage)
+{
+
+  int i;
+  double data_double[n];
+  FILE* outputfile =   fopen("data.dat","w");
+   for(i=6;i<n;i++)
+   {
+    data_voltage[i] = (double)data[i]*10.0*v/255.0;
+    fprintf(outputfile,"%f\n",data_voltage[i]);
+   }
+  fclose(outputfile);
+  
+}

@@ -22,6 +22,7 @@ ViSession scope_handle;
 ViSession fun_generator;
 ViSession resource_manager;
 ViStatus status = VI_SUCCESS;
+char returned_message[64];
 char data[2500];
 double ave[2496];
 int i;
@@ -32,16 +33,16 @@ double data_voltage[2500];
 status = viOpenDefaultRM(&resource_manager);
 
 fun_generator = findgen(resource_manager, 1);
+
+
+
 // Controlling Function Generator from PC
  setSinWave(fun_generator,1,10,100,0,0); //Set the waveform of CH1 to sine waveform with 100Hz frequency, 10Vpp amplitude, 0VDC offset and 0° start phase
  viPrintf(fun_generator,":OUTP1 ON\n");  
 // for oscilloscope
  scope_handle = findscope(resource_manager, 1);
  getdata(scope_handle,1, data);
- for(i=0;i<10;i++)
- {
-  printf("%c\n",data);
- }
+ double data_double[2500];
  getvoltage(data,2500, 2, data_voltage);
  fflush(stdout);
 //   smoothed(2500,data_voltage,5,ave);
@@ -53,20 +54,4 @@ fun_generator = findgen(resource_manager, 1);
 //   printf("\nAmplitude =%f",a);
 viClose(fun_generator);
 viClose(scope_handle);
-}
-
-void getvoltage(char *data, int n, double v, double* data_voltage)
-{
-
-  int i;
-  double data_double[n];
-  FILE* outputfile =   fopen("data.dat","w");
-   for(i=0;i<n;i++)
-   {
-    data_double[i]=data[i];
-    data_voltage[i] = data_double[i]*10.0*v/255.0;
-    fprintf(outputfile,"%f\n",data_voltage[i]);
-   }
-  fclose(outputfile);
-  
 }

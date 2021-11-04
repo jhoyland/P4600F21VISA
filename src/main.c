@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "randdata.h"
 #include <time.h>
 #include <math.h>
 #include "dataprocessing.h"
@@ -161,7 +160,7 @@ if(status != VI_SUCCESS)
   double ddata[2500];
 
   for(i=0; i<2500; i++)
-  {
+  {  
     ddata[i] = (10.0/255.0) * data[i];
     fprintf(datafile,"%f \n",ddata[i]);
   }
@@ -195,25 +194,16 @@ fflush(stdout);
 #include "scopecontrol.h"
 
 int main(int argc, char** argv){
-  //TEST SCOPE FUNCTIONS
-  ViSession my_handle;
-  ViSession resource;
+  //TEST FUNCTIONS
+  int ch = 1;
+  resource_manager = resourceCreate();
+  initScope(resource_manager);
 
-  resource = resourceCreate();
-
-  my_handle = initScope(resource);
-
-  printf("\nall done!");
-
-  showinfo(my_handle);
-  setScale(my_handle,1,10);
-  //viPrintf(my_handle, "CH1:SCA 1 \n");
-
-  double ddata[2500];
-  getData(ddata,2500,my_handle, 1,5);
-
-  fflush(stdout);
-
+  scope_handle = initScope(resource_manager);
+  fg_handle = initFG(resource_manager);
+  initCH(fg_handle, ch);
+  setSinWave(fg_handle, ch, 10, 1000, 0, 0);
+  setFreq(fg_handle, ch, 500);
 
   return 0;
 }

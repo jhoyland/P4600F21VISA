@@ -115,6 +115,39 @@ void setScale(ViSession scope_handle, int channel, int scale)
 // function to autoset
 void Scopeset(ViSession scope_handle)
 {
-	viPrintf(ViSession scope_handle, "AUTOSet EXECute");
+	viPrintf(scope_handle, "AUTOSet EXECute");
 }
 
+double Ampget(ViSession scope_handle, int channel)
+{
+	viPrintf(scope_handle, "DATA:SOURCE CH%d\nDATA:ENC BINARY\nDATA:WIDTH 1\nDATA:START 0\nDATA:STOP 2500\n", channel);
+
+ 	char data[2500];
+
+ 	viPrintf(scope_handle, "CURVe?\n");
+ 	viScanf(scope_handle, "%t", data);
+ 	int i;
+ 	// this code works but is not in voltage values
+ 	//read through loop
+ 	//for(i=0; i<2500; i++)
+ 	//{
+ 	//  printf("%d \n",data[i]);
+ 	//}
+
+ 	//print data to a file 
+
+ 	//FILE* datafile = fopen("curve.dat","w");
+ 	// attempt to turn data into double
+ 	double ddata[2500];
+
+  	for(i=0; i<2500; i++)
+ 	{  
+   		ddata[i] = (10.0/255.0) * data[i];
+    	//fprintf(datafile,"%f \n",ddata[i]);
+  	}
+ 	//fclose(datafile);
+ 	//NOW that we have the data in voltage values we can get the amplitude
+ 	double amp; 
+ 	amp = rms(ddata, 2500) * M_SQRT2; 
+ 	return amp;
+}

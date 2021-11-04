@@ -3059,6 +3059,58 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Scopeset(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ViSession arg1 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  ecode1 = SWIG_AsVal_unsigned_SS_int(swig_obj[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "Scopeset" "', argument " "1"" of type '" "ViSession""'");
+  } 
+  arg1 = (ViSession)(val1);
+  Scopeset(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Ampget(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ViSession arg1 ;
+  int arg2 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  double result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "Ampget", 2, 2, swig_obj)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_int(swig_obj[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "Ampget" "', argument " "1"" of type '" "ViSession""'");
+  } 
+  arg1 = (ViSession)(val1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Ampget" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = (int)(val2);
+  result = (double)Ampget(arg1,arg2);
+  resultobj = SWIG_From_double((double)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_resourceCreateFG(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ViSession result;
@@ -3179,6 +3231,44 @@ SWIGINTERN PyObject *_wrap_setSinWave(PyObject *SWIGUNUSEDPARM(self), PyObject *
   } 
   arg6 = (double)(val6);
   result = setSinWave(arg1,arg2,arg3,arg4,arg5,arg6);
+  resultobj = SWIG_NewPointerObj((ViStatus *)memcpy((ViStatus *)calloc(1,sizeof(ViStatus)),&result,sizeof(ViStatus)), SWIGTYPE_p_ViStatus, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_setFreq(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ViSession arg1 ;
+  double arg2 ;
+  double arg3 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double val3 ;
+  int ecode3 = 0 ;
+  PyObject *swig_obj[3] ;
+  ViStatus result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "setFreq", 3, 3, swig_obj)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_int(swig_obj[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "setFreq" "', argument " "1"" of type '" "ViSession""'");
+  } 
+  arg1 = (ViSession)(val1);
+  ecode2 = SWIG_AsVal_double(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "setFreq" "', argument " "2"" of type '" "double""'");
+  } 
+  arg2 = (double)(val2);
+  ecode3 = SWIG_AsVal_double(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "setFreq" "', argument " "3"" of type '" "double""'");
+  } 
+  arg3 = (double)(val3);
+  result = setFreq(arg1,arg2,arg3);
   resultobj = SWIG_NewPointerObj((ViStatus *)memcpy((ViStatus *)calloc(1,sizeof(ViStatus)),&result,sizeof(ViStatus)), SWIGTYPE_p_ViStatus, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -3367,10 +3457,13 @@ static PyMethodDef SwigMethods[] = {
 	 { "showinfo", _wrap_showinfo, METH_O, NULL},
 	 { "getData", _wrap_getData, METH_VARARGS, NULL},
 	 { "setScale", _wrap_setScale, METH_VARARGS, NULL},
+	 { "Scopeset", _wrap_Scopeset, METH_O, NULL},
+	 { "Ampget", _wrap_Ampget, METH_VARARGS, NULL},
 	 { "resourceCreateFG", _wrap_resourceCreateFG, METH_NOARGS, NULL},
 	 { "initFG", _wrap_initFG, METH_O, NULL},
 	 { "initCH", _wrap_initCH, METH_VARARGS, NULL},
 	 { "setSinWave", _wrap_setSinWave, METH_VARARGS, NULL},
+	 { "setFreq", _wrap_setFreq, METH_VARARGS, NULL},
 	 { "mean", _wrap_mean, METH_VARARGS, NULL},
 	 { "stdev", _wrap_stdev, METH_VARARGS, NULL},
 	 { "rms", _wrap_rms, METH_VARARGS, NULL},

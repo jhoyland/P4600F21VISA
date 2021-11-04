@@ -77,6 +77,12 @@ def getData(ddata: "double *", ddatalength: "int", scope_handle: "ViSession", ch
 def setScale(scope_handle: "ViSession", channel: "int", scale: "int") -> "void":
     return _datalink.setScale(scope_handle, channel, scale)
 
+def Scopeset(scope_handle: "ViSession") -> "void":
+    return _datalink.Scopeset(scope_handle)
+
+def Ampget(scope_handle: "ViSession", channel: "int") -> "double":
+    return _datalink.Ampget(scope_handle, channel)
+
 def resourceCreateFG() -> "ViSession":
     return _datalink.resourceCreateFG()
 
@@ -88,6 +94,9 @@ def initCH(handle: "ViSession", channel: "int") -> "void":
 
 def setSinWave(handle: "ViSession", channel: "double", amp: "double", freq: "double", offset: "double", phase: "double") -> "ViStatus":
     return _datalink.setSinWave(handle, channel, amp, freq, offset, phase)
+
+def setFreq(handle: "ViSession", channel: "double", freq: "double") -> "ViStatus":
+    return _datalink.setFreq(handle, channel, freq)
 
 def mean(num: "float []", n: "int") -> "float":
     return _datalink.mean(num, n)

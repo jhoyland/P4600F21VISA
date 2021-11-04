@@ -2896,6 +2896,9 @@ SWIGINTERNINLINE PyObject*
 }
 
 
+  #define SWIG_From_double   PyFloat_FromDouble 
+
+
 SWIGINTERN swig_type_info*
 SWIG_pchar_descriptor(void)
 {
@@ -3126,6 +3129,60 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_findamp(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  double arg2 ;
+  double arg3 ;
+  ViSession arg4 ;
+  ViSession arg5 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double val3 ;
+  int ecode3 = 0 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
+  unsigned int val5 ;
+  int ecode5 = 0 ;
+  PyObject *swig_obj[5] ;
+  double result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "findamp", 5, 5, swig_obj)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(swig_obj[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "findamp" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = (int)(val1);
+  ecode2 = SWIG_AsVal_double(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "findamp" "', argument " "2"" of type '" "double""'");
+  } 
+  arg2 = (double)(val2);
+  ecode3 = SWIG_AsVal_double(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "findamp" "', argument " "3"" of type '" "double""'");
+  } 
+  arg3 = (double)(val3);
+  ecode4 = SWIG_AsVal_unsigned_SS_int(swig_obj[3], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "findamp" "', argument " "4"" of type '" "ViSession""'");
+  } 
+  arg4 = (ViSession)(val4);
+  ecode5 = SWIG_AsVal_unsigned_SS_int(swig_obj[4], &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "findamp" "', argument " "5"" of type '" "ViSession""'");
+  } 
+  arg5 = (ViSession)(val5);
+  result = (double)findamp(arg1,arg2,arg3,arg4,arg5);
+  resultobj = SWIG_From_double((double)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_findscope(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ViSession arg1 ;
@@ -3249,6 +3306,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "findgen", _wrap_findgen, METH_VARARGS, NULL},
 	 { "setSinWave", _wrap_setSinWave, METH_VARARGS, NULL},
 	 { "rm", _wrap_rm, METH_NOARGS, NULL},
+	 { "findamp", _wrap_findamp, METH_VARARGS, NULL},
 	 { "findscope", _wrap_findscope, METH_VARARGS, NULL},
 	 { "getdata", _wrap_getdata, METH_VARARGS, NULL},
 	 { "getvoltage", _wrap_getvoltage, METH_VARARGS, NULL},

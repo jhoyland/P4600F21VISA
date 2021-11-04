@@ -4,6 +4,7 @@
 #include "camparmo.h"
 #include "fgenerator.h"
 #include "scope.h"
+#include "inbetween.h"
 #include <time.h>
 #include <windows.h>
 
@@ -30,11 +31,9 @@ double a;
 double m;
 double rms;
 double data_voltage[2500];
-status = viOpenDefaultRM(&resource_manager);
 
+status = rm(&resource_manager);
 fun_generator = findgen(resource_manager, 1);
-
-
 
 // Controlling Function Generator from PC
  setSinWave(fun_generator,1,10,100,0,0); //Set the waveform of CH1 to sine waveform with 100Hz frequency, 10Vpp amplitude, 0VDC offset and 0° start phase

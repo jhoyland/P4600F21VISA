@@ -71,6 +71,9 @@ def setSinWave(gen: "ViSession", channel: "int", amplitude: "double", frequency:
 def rm() -> "ViSession":
     return _datalink.rm()
 
+def findamp(channel: "int", amp: "double", frequency: "double", fun_generator: "ViSession", scope_handle: "ViSession") -> "double":
+    return _datalink.findamp(channel, amp, frequency, fun_generator, scope_handle)
+
 def findscope(rm: "ViSession", channel: "int") -> "ViSession":
     return _datalink.findscope(rm, channel)
 

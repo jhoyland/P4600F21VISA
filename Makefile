@@ -4,20 +4,20 @@ LDFLAGS   =
 
 # User directories to search
 BUILDDIR  = ./build
-INCDIR    = ./include
+INCDIR    = ./includes $(HOMEDIR)/dll/include
 SRCDIR    = ./src
 
 HOMEDIR   = /c/msys64/home/texas/p4600F21visa
 
 # 3rd Party library directories to search
-LIBDIR    = /mingw64/lib $(HOMEDIR)/lib
-LIBINCDIR = $(HOMEDIR)/includes
+LIBDIR    = /mingw64/lib $(HOMEDIR)/lib $(HOMEDIR)
+LIBINCDIR = $(HOMEDIR)/includes $(HOMEDIR)/dll/indlude
 
 # List sources, object files and libraries to be used
 SOURCES   = $(wildcard $(SRCDIR)/*.c )# Compiler and linker options
 CC        = gcc
 OBJECTS   = $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SOURCES))
-LIBRARIES = visa64
+LIBRARIES = visa64 datalink
 
 # Create command line arguments
 LIBCMD    = $(addprefix -l,$(LIBRARIES))

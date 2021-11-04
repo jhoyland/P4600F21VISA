@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <calculations.h>
+#include "calculations.h"
 #include <math.h>
 
 void convertCurveToVoltage(int n, char* rawDataArray, float scale, double* voltages)

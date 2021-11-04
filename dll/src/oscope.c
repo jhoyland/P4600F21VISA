@@ -6,18 +6,18 @@
 #include "oscope.h"
 
 //Oscilloscop functions
-ViStatus autosetScope(ViSession scope_handle)
+void autosetScope(ViSession scope_handle)
 {
-	ViStatus status = VI_SUCCESS;
-	printf("\nAutosetting...\n");
-    fflush(stdout);
+	//ViStatus status = VI_SUCCESS;
+	//printf("\nAutosetting...\n");
+    //fflush(stdout);
 
     viPrintf(scope_handle,"AUTOSet EXECute\n");//autoset 
     Sleep(5000);
 
-    printf("\nDone\n");
-    fflush(stdout);
-    return status;
+    //printf("\nDone\n");
+    //fflush(stdout);
+    //return status;
 }
 
 ViStatus setScopewindow(ViSession scope_handle, int channel, double yscale, double ypos, double xscale, double xpos)
@@ -105,10 +105,10 @@ void scanScopedata(double *dataDouble, double *avg, double *rootmeansquare, doub
 
 	*amp = amplitude(*rootmeansquare, *avg);
 
-	printf("Mean: %f\n",*avg);
-	printf("RMS: %f\n",*rootmeansquare);
-	printf("AMP: %f\n",*amp);
-	fflush(stdout);
+	//printf("Mean: %f\n",*avg);
+	//printf("RMS: %f\n",*rootmeansquare);
+	//printf("AMP: %f\n",*amp);
+	//fflush(stdout);
 }
 
 
@@ -153,4 +153,23 @@ ViSession initScope(ViSession RM)
  	}
 
 	return scope_handle;
+}
+
+double getAmplitude(ViSession scope_handle, int channel)
+{
+  char dataGot[2500];
+  double dataDouble[2500];
+  double delta_volts = 0.0; //Vpp is 5.0v in function generator
+  //double step = delta_volts/256.0;
+ 
+  getScopedata(scope_handle, channel, dataGot);
+
+  delta_volts = getScopevolts(scope_handle, channel);
+
+  convertScopedata(dataGot, dataDouble, delta_volts);
+
+  double avg=0.0, rms=0.0, amp=0.0;
+  scanScopedata(dataDouble, &avg, &rms, &amp);
+
+  return amp;
 }

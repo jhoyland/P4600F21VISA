@@ -2830,13 +2830,6 @@ SWIG_AsVal_unsigned_SS_int (PyObject * obj, unsigned int *val)
 }
 
 
-SWIGINTERNINLINE PyObject*
-  SWIG_From_int  (int value)
-{
-  return PyInt_FromLong((long) value);
-}
-
-
 SWIGINTERN int
 SWIG_AsVal_long (PyObject *obj, long* val)
 {
@@ -2893,6 +2886,13 @@ SWIG_AsVal_int (PyObject * obj, int *val)
     }
   }  
   return res;
+}
+
+
+SWIGINTERNINLINE PyObject*
+  SWIG_From_int  (int value)
+{
+  return PyInt_FromLong((long) value);
 }
 
 
@@ -3037,7 +3037,6 @@ SWIGINTERN PyObject *_wrap_autosetScope(PyObject *SWIGUNUSEDPARM(self), PyObject
   unsigned int val1 ;
   int ecode1 = 0 ;
   PyObject *swig_obj[1] ;
-  ViStatus result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
@@ -3046,8 +3045,8 @@ SWIGINTERN PyObject *_wrap_autosetScope(PyObject *SWIGUNUSEDPARM(self), PyObject
     SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "autosetScope" "', argument " "1"" of type '" "ViSession""'");
   } 
   arg1 = (ViSession)(val1);
-  result = (ViStatus)autosetScope(arg1);
-  resultobj = SWIG_From_int((int)(result));
+  autosetScope(arg1);
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
   return NULL;
@@ -3247,6 +3246,36 @@ SWIGINTERN PyObject *_wrap_getScopevolts(PyObject *SWIGUNUSEDPARM(self), PyObjec
   } 
   arg2 = (int)(val2);
   result = (double)getScopevolts(arg1,arg2);
+  resultobj = SWIG_From_double((double)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_getAmplitude(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ViSession arg1 ;
+  int arg2 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  double result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "getAmplitude", 2, 2, swig_obj)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_int(swig_obj[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "getAmplitude" "', argument " "1"" of type '" "ViSession""'");
+  } 
+  arg1 = (ViSession)(val1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "getAmplitude" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = (int)(val2);
+  result = (double)getAmplitude(arg1,arg2);
   resultobj = SWIG_From_double((double)(result));
   return resultobj;
 fail:
@@ -3459,6 +3488,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "getScopedata", _wrap_getScopedata, METH_VARARGS, NULL},
 	 { "scanScopedata", _wrap_scanScopedata, METH_VARARGS, NULL},
 	 { "getScopevolts", _wrap_getScopevolts, METH_VARARGS, NULL},
+	 { "getAmplitude", _wrap_getAmplitude, METH_VARARGS, NULL},
 	 { "initRM", _wrap_initRM, METH_NOARGS, NULL},
 	 { "initScope", _wrap_initScope, METH_O, NULL},
 	 { "displayWave", _wrap_displayWave, METH_VARARGS, NULL},

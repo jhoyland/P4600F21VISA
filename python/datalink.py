@@ -62,7 +62,7 @@ class _SwigNonDynamicMeta(type):
 
 
 
-def autosetScope(scope_handle: "ViSession") -> "ViStatus":
+def autosetScope(scope_handle: "ViSession") -> "void":
     return _datalink.autosetScope(scope_handle)
 
 def setScopewindow(scope_handle: "ViSession", channel: "int", yscale: "double", ypos: "double", xscale: "double", xpos: "double") -> "ViStatus":
@@ -79,6 +79,9 @@ def scanScopedata(dataDouble: "double *", avg: "double *", rootmeansquare: "doub
 
 def getScopevolts(scope_handle: "ViSession", channel: "int") -> "double":
     return _datalink.getScopevolts(scope_handle, channel)
+
+def getAmplitude(scope_handle: "ViSession", channel: "int") -> "double":
+    return _datalink.getAmplitude(scope_handle, channel)
 
 def initRM() -> "ViSession":
     return _datalink.initRM()

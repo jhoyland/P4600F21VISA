@@ -7,6 +7,83 @@
 #include "visa.h"
 
 
+double theController(double freq, double amp, double offset, double phase)
+{
+	int errorPos = 0;
+	ViStatus status = VI_SUCCESS;
+	ViSession resource_manager, scope_handle, func_handle;
+
+	resource_manager = resourceManager(&status);
+	if(status != VI_SUCCESS)
+	{
+		errorPos += 1;
+		exit(1);
+	}
+	scope_handle = findOpenScope(resource_manager, &status);
+	if(status != VI_SUCCESS)
+	{
+		errorPos += 1;
+		exit(1);
+	}
+	func_handle = findOpenFuncgen(resource_manager, &status);
+	if(status != VI_SUCCESS)
+	{
+		errorPos += 1;
+		exit(1);
+	}
+
+
+	int windowSize = 15;
+	int length = 2500;
+	
+	
+
+	status = setFuctionGenSin(func_handle, 1, freq, amp, offset, phase);
+	if(status != VI_SUCCESS)
+	{
+		errorPos += 1;
+		exit(1);
+	}
+
+
+	status = setOscilloscopeHorScale(scope_handle);
+	status = setOscilloscopeVertScale(scope_handle);
+	// status = scopeAutoSet(scope_handle);
+	if(status != VI_SUCCESS)
+	{
+		errorPos += 1;
+		exit(1);
+	}
+
+	char data[length];
+	status = scopeGrabData(scope_handle, 1, "RIBinary", data);
+	if(status != VI_SUCCESS)
+	{
+		errorPos += 1;
+		exit(1);
+	}
+
+	int  start = 1;
+	start = data[1] - '0' + 2;
+	length = length - start;
+	
+	double data_double[length];
+	double volts = grabVoltsDiv(scope_handle, &status);
+	adcConvert(data, data_double, volts);
+
+	double smoothed_data[length - windowSize];
+	smooth(data_double, length, windowSize, smoothed_data);
+
+	double ampCalc = 0.0;
+	ampCalc = calculateAmplitude(smoothed_data, length);	
+
+	// writeToFile("ampdata.csv", freq, amp);
+
+	viClose(scope_handle);
+	viClose(func_handle);
+	return ampCalc;
+}
+
 double mean(double* data, int length)
 {
 	double sum = 0.0;
@@ -40,8 +117,8 @@ double amplitude(double rms)
 void smooth(double* data, int length, int filterLength, double* smoothed)
 {
 	double summed = 0.0;
-	int adjustment = filterLength/2;
-	int smoothedLength = length - filterLength + 1;
+	// int adjustment = filterLength/2;
+	int smoothedLength = length - filterLength;
 
 	// for (int i = adjustment; i < (length - adjustment + 1); i++)
 	// {
@@ -70,26 +147,22 @@ void smooth(double* data, int length, int filterLength, double* smoothed)
 	}
 
 }
-int adcConvert(char* data, double* converted, double volts)
+void adcConvert(char* data, double* converted, double volts)
 {
 	int  start = 1;
-	start = data[1] - '0';
-    char str[5] = "";    
+	start = data[1] + 2 - '0';
+    // char str[5] = "";    
 
-    for(int i = 2; i <= (start + 1); i++)
-    {
-    	char ch = data[i];
-    	strncat(str, &ch, 1);
-    }
-
-    int numdatapoints = atoi(str) - (start + 2);
+    // for(int i = 2; i <= (start + 1); i++)
+    // {
+    // 	char ch = data[i];
+    // 	strncat(str, &ch, 1);
+    // }
 
     for(int i = start ; i < 2500; i++)
     {
-       converted[i - start] = data[i + 2] * volts*10.0/256.0;
+       converted[i - start] = data[i] * volts*10.0/256.0;
     }
-
-    return (2500 - (start + 2));
 }
 
 void writeToFile(char* name, double start_freq, double amplength, double* ampData, double incr)
@@ -112,12 +185,11 @@ double calculateAmplitude(double* smoothed_data, int length)
 	double amplitudeValue = 0.0;
 
 	meanValue = mean(smoothed_data, length);
+	printf("In the controller mean %f\n", meanValue);
   	rmsValue = rms(smoothed_data, length, meanValue);
+  	printf("In the controller rmsValue %f\n", rmsValue);
   	amplitudeValue = amplitude(rmsValue);
+  	printf("In the controller amplitudeValue %f\n", amplitudeValue);
   	return amplitudeValue;
 }
 
-double theController(double start_freq, double end_freq, double incr)
-{
-	
-}

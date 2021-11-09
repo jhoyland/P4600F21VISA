@@ -18,7 +18,7 @@ LIBINCDIR = $(HOMEDIR)/includes $(HOMEDIR)/dll/includes
 # List sources, object files and libraries to be used
 SOURCES   = $(wildcard $(SRCDIR)/*.c )
 OBJECTS   = $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SOURCES))
-LIBRARIES = visa64 lcrfunctions
+LIBRARIES = visa64 lcrcontrol
 
 # Create command line arguments
 LIBCMD    = $(addprefix -l,$(LIBRARIES))

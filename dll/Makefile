@@ -1,7 +1,7 @@
 # Compiler and linker options
 CC        = gcc
 CFLAGS    = -c -Wall -g
-LDFLAGS   = -shared -v
+LDFLAGS   = -shared
 
 MINGW_ENV = mingw64
 PYVERSION = 37
@@ -33,7 +33,7 @@ LIBDIRCMD = $(addprefix -L,$(LIBDIR))
 INCCMD    = $(addprefix -I,$(INCDIR) $(LIBINCDIR))
 
 # The final executable name
-TARGET    = datalink
+TARGET    = lcrcontrol
 
 
 # The rules

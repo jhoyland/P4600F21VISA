@@ -2,10 +2,12 @@
 #define __SCOPE_FUNC_COMMANDS_DOT_H  //creates a compilation variable
 #include "visa.h"
 
-ViSession resourceManager();
-ViSession findOpenScope(ViSession resource_manager);
-ViSession findOpenFuncgen(ViSession resource_manager);
-double grabVoltsDiv(ViSession scope_handle);
+ViSession resourceManager(ViStatus* status);
+ViSession findOpenScope(ViSession resource_manager, ViStatus* status);
+ViSession findOpenFuncgen(ViSession resource_manager, ViStatus* status);
+ViStatus setOscilloscopeHorScale(ViSession scope_handle);
+ViStatus setOscilloscopeVertScale(ViSession scope_handle);
+double grabVoltsDiv(ViSession scope_handle, ViStatus* status);
 ViStatus setFuctionGenSin(ViSession func_handle, int channel, double freq, double amplitude, double offset, double phase);
 ViStatus scopeAutoSet(ViSession scope_handle);
 ViStatus scopeGrabData(ViSession scope_handle, int channel, char* datatype, char* data);

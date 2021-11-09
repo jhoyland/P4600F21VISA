@@ -3179,14 +3179,14 @@ fail:
 SWIGINTERN PyObject *_wrap_setSinWave(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ViSession arg1 ;
-  double arg2 ;
+  int arg2 ;
   double arg3 ;
   double arg4 ;
   double arg5 ;
   double arg6 ;
   unsigned int val1 ;
   int ecode1 = 0 ;
-  double val2 ;
+  int val2 ;
   int ecode2 = 0 ;
   double val3 ;
   int ecode3 = 0 ;
@@ -3205,11 +3205,11 @@ SWIGINTERN PyObject *_wrap_setSinWave(PyObject *SWIGUNUSEDPARM(self), PyObject *
     SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "setSinWave" "', argument " "1"" of type '" "ViSession""'");
   } 
   arg1 = (ViSession)(val1);
-  ecode2 = SWIG_AsVal_double(swig_obj[1], &val2);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "setSinWave" "', argument " "2"" of type '" "double""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "setSinWave" "', argument " "2"" of type '" "int""'");
   } 
-  arg2 = (double)(val2);
+  arg2 = (int)(val2);
   ecode3 = SWIG_AsVal_double(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "setSinWave" "', argument " "3"" of type '" "double""'");
@@ -3241,11 +3241,11 @@ fail:
 SWIGINTERN PyObject *_wrap_setFreq(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ViSession arg1 ;
-  double arg2 ;
+  int arg2 ;
   double arg3 ;
   unsigned int val1 ;
   int ecode1 = 0 ;
-  double val2 ;
+  int val2 ;
   int ecode2 = 0 ;
   double val3 ;
   int ecode3 = 0 ;
@@ -3258,11 +3258,11 @@ SWIGINTERN PyObject *_wrap_setFreq(PyObject *SWIGUNUSEDPARM(self), PyObject *arg
     SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "setFreq" "', argument " "1"" of type '" "ViSession""'");
   } 
   arg1 = (ViSession)(val1);
-  ecode2 = SWIG_AsVal_double(swig_obj[1], &val2);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "setFreq" "', argument " "2"" of type '" "double""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "setFreq" "', argument " "2"" of type '" "int""'");
   } 
-  arg2 = (double)(val2);
+  arg2 = (int)(val2);
   ecode3 = SWIG_AsVal_double(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "setFreq" "', argument " "3"" of type '" "double""'");

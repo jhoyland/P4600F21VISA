@@ -61,14 +61,14 @@ void initCH(ViSession handle, int channel)
 }
 
 //function to set sin wave
-ViStatus setSinWave(ViSession handle, double channel, double amp, double freq, double offset, double phase)
+ViStatus setSinWave(ViSession handle, int channel, double amp, double freq, double offset, double phase)
 {
-	viPrintf(handle,"SOURCE%d:APPLY:SIN%f,%f,%f,%f\n",channel, freq, amp, offset, phase);
+	viPrintf(handle,"SOURCE%d:APPLY:SIN %f,%f,%f,%f\n",channel, freq, amp, offset, phase);
 	ViStatus status = VI_SUCCESS;
 	return status;
 }
 
-ViStatus setFreq(ViSession handle, double channel, double freq)
+ViStatus setFreq(ViSession handle, int channel, double freq)
 {
-  viPrintf(handle, ":SOUR%d:FREQ %d", channel, freq); 
+  viPrintf(handle, ":SOUR%d:FREQ %f\n", channel, freq); 
 }

@@ -37,7 +37,6 @@ ViSession initScope(ViSession resource_manager)
   	char description[VI_FIND_BUFLEN];
 
 	status = viFindRsrc(resource_manager, "USB[0-9]::0x0699?*INSTR", &resource_list, &num_inst, &description);
-
     if(status != VI_SUCCESS)
     {
       printf("Could not locate any instruments\n");
@@ -46,7 +45,8 @@ ViSession initScope(ViSession resource_manager)
     }
 
   status = viOpen(resource_manager, description, VI_NULL, VI_NULL, &scope_handle);
-  
+  viPrintf(scope_handle, "DATA:SOURCE CH1\nDATA:ENC BINARY\nDATA:WIDTH 1\nDATA:START 0\nDATA:STOP 2500\n");
+
   if(status != VI_SUCCESS)
     {
       printf("Could not connect to scope\n");
@@ -115,12 +115,12 @@ void setScale(ViSession scope_handle, int channel, int scale)
 // function to autoset
 void Scopeset(ViSession scope_handle)
 {
-	viPrintf(scope_handle, "AUTOSet EXECute");
+	viPrintf(scope_handle, "AUTOSet EXECute\n");
 }
 
 double Ampget(ViSession scope_handle, int channel)
 {
-	viPrintf(scope_handle, "DATA:SOURCE CH%d\nDATA:ENC BINARY\nDATA:WIDTH 1\nDATA:START 0\nDATA:STOP 2500\n", channel);
+	//viPrintf(scope_handle, "DATA:SOURCE CH%d\nDATA:ENC BINARY\nDATA:WIDTH 1\nDATA:START 0\nDATA:STOP 2500\n", channel);
 
  	char data[2500];
 

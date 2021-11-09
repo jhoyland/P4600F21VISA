@@ -92,10 +92,10 @@ def initFG(resource_manager: "ViSession") -> "ViSession":
 def initCH(handle: "ViSession", channel: "int") -> "void":
     return _datalink.initCH(handle, channel)
 
-def setSinWave(handle: "ViSession", channel: "double", amp: "double", freq: "double", offset: "double", phase: "double") -> "ViStatus":
+def setSinWave(handle: "ViSession", channel: "int", amp: "double", freq: "double", offset: "double", phase: "double") -> "ViStatus":
     return _datalink.setSinWave(handle, channel, amp, freq, offset, phase)
 
-def setFreq(handle: "ViSession", channel: "double", freq: "double") -> "ViStatus":
+def setFreq(handle: "ViSession", channel: "int", freq: "double") -> "ViStatus":
     return _datalink.setFreq(handle, channel, freq)
 
 def mean(num: "float []", n: "int") -> "float":

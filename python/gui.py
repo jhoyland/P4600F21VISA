@@ -6,33 +6,49 @@ This is a temporary script file.
 """
 import datalink
 import tkinter as tk
+import numpy as np
+import time
+import math
+import threading
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-import numpy as np
+endThread = threading.Event()
+lockThread = threading.Lock()
+dataReady = threading.Event()
 
 def plot_AMP(FG, OS):
     channel, initialFreq, stepSize, finalFreq = getVariables()
-    #x = float(var_x.get())
-    x=np.arange(initialFreq, finalFreq, stepSize)
-    y=[]
+    endThread.clear()
+    global x
+    global y
+    x = np.arange(initialFreq, finalFreq, stepSize)
+    y = []
     datalink.setSinwave(FG, channel, initialFreq, 5.0, 0.0, 0.0)
     datalink.displayWave(FG, channel)  #output the signal
+    datalink.autosetScope(OS)       #autoset
+    time.sleep(3)
     #calculation
     for i in x: 
         #set freq on generator with i
-        datalink.autosetScope(OS)
         datalink.setSinwave(FG, channel, i, 5.0, 0.0, 0.0)
+        datalink.autosetScope(OS)
+        time.sleep(3)
         #get amp at i\
         amp = datalink.getAmplitude(OS,channel) 
+        
+        lockThread.acquire()     
         y.append(amp)
-
-        #var_answer.set("{:}".format(y))    
-        graph.clear()
-        graph.plot(x[0:len(y)],y)
-        canvas.draw()
-    
+        lockThread.release()
+        
+        if endThread.is_set():          #if stop button is pressed show graph.
+            dataReady.set()
+            #graph.clear()
+            #graph.plot(x[0:len(y)],y)
+            #canvas.draw()
+            return 
+    dataReady.set()
 
 
 def getVariables():
@@ -46,10 +62,23 @@ def init():
     RM = datalink.initRM()
     FG = datalink.initFG(RM)
     OS = datalink.initScope(RM)
-    plot_AMP(FG, OS)
+    t=threading.Thread(target = plot_AMP, args=(FG, OS))
+    t.start()
+    #plot_AMP(FG, OS)
+#-------------------------------------------------------------------------------
+#threading
+def stopIt():
+    global x
+    global y
+    endThread.set()
     
-
-
+    if dataReady.set():
+        lockThread.acquire()
+        graph.clear()
+        graph.plot(x[0:len(y)],y)
+        canvas.draw()
+        lockThread.release()
+    
 #------------------------------------------------------------------------------
 root = tk.Tk()
 root.wm_title("LRC")
@@ -63,10 +92,10 @@ label_step = tk.Label(ctrlframe,text="Step size (Hz)",width=15)
 label_endFreq = tk.Label(ctrlframe,text="Final Freq (Hz)",width=15)
 #label_x = tk.Label(ctrlframe,text="x",width=5)
 
-var_Channel = tk.StringVar(value="0")
-var_Freq = tk.StringVar(value="0")
-var_step = tk.StringVar(value="0")
-var_endFreq = tk.StringVar(value="0")
+var_Channel = tk.StringVar(value="1")
+var_Freq = tk.StringVar(value="500")
+var_step = tk.StringVar(value="100")
+var_endFreq = tk.StringVar(value="1000")
 var_amp = tk.StringVar(value="Get AMP")
 
 entry_Channel = tk.Entry(ctrlframe,text="Channel",textvariable=var_Channel,width=10)
@@ -97,14 +126,14 @@ graph = fig.add_subplot()
 canvas = FigureCanvasTkAgg(fig,master=root)
 canvas.get_tk_widget().pack(side=tk.RIGHT)
 
-x = np.arange(-10,10,0.1)
+#x = np.arange(-10,10,0.1)
 
 calc_button = tk.Button(ctrlframe,text="Calculate",command=init)
 calc_button.grid(row=4,column=0,columnspan=2,sticky="ew")
-#------------------------------------------------------------------------------
 
-#RM, FG, OS = init()
-#initialFreq = getInitialfreq()
+stop_button = tk.Button(ctrlframe,text="Stop",command=stopIt)
+stop_button.grid(row=5,column=0,columnspan=2,sticky="ew")
+#------------------------------------------------------------------------------
 
 
 

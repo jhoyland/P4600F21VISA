@@ -13,7 +13,7 @@ void autosetScope(ViSession scope_handle)
     //fflush(stdout);
 
     viPrintf(scope_handle,"AUTOSet EXECute\n");//autoset 
-    Sleep(5000);
+    //Sleep(5000);
 
     //printf("\nDone\n");
     //fflush(stdout);

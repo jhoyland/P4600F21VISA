@@ -60,7 +60,7 @@ def calc_poly():
     C = float(C_var.get())
     #X = float(X_var.get())
     y=A*x*x+B*x+C
-    #Answer_var.set("{:}".format(y))
+    Answer_var.set("{:}".format(y))
     graph.clear()
     graph.plot(x,y)
     canvas.draw()
@@ -76,8 +76,8 @@ Quit_button.grid(row=6,column=0,columnspan=2,sticky="ews",pady=(20,5))
 
 
 
-#Answer_label = tk.Label(control_frame,textvariable=Answer_var)
-#Answer_label.grid(row=5,column=0,columnspan=2,sticky="ews")
+Answer_label = tk.Label(control_frame,textvariable=Answer_var)
+Answer_label.grid(row=5,column=0,columnspan=2,sticky="ews")
 
 #X_var.trace('w',calc_slider)
 

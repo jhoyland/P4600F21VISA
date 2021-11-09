@@ -1,6 +1,7 @@
 #ifndef __SIGNALANALYSIS_H
 #define __SIGNALANALYSIS_H
 
+#include "visa.h"
 // JAMES: Just as a matter of style, since your header name is
 // signal_analysis.h the header guard name would usually be
 // __SIGNAL_ANALYSIS_H
@@ -11,5 +12,5 @@ float SA_Amplitude(float rms);
 float SA_smooth(int n, int m, float * data, float * result);
 void OSC_data_to_voltage (int length, float size_division, unsigned char * input, float * output);
 void V_vs_F_datasave (int F_array_size, float * F_array, float * Vamp_array,char * file_name);
-float data_loop (int FG_channel,int OSC_channel,float F_now, float phase_offset,float V_offset,float fg_volt,int osc_resol,int move_avg_window);
+float data_loop (ViSession functiongen_handle, ViSession scope_handle, int FG_channel,int OSC_channel,float F_now,float V_offset,float fg_volt,int osc_resol,int move_avg_window);
 #endif

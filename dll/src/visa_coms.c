@@ -37,42 +37,52 @@ void OSC_gather(ViSession scope_handle,unsigned char * OSC_data) {
 }
 
 
-void OSC_setup (ViStatus status, ViSession * resource_manager, ViSession * scope_handle) {
+ViSession OSC_setup (ViSession resource_manager) {
+  ViStatus status;
+  ViSession scope_handle;
   ViFindList resource_list;
+  
   long unsigned int resource_num;
   char description[VI_FIND_BUFLEN];
-  status = viFindRsrc(*resource_manager,"USB[0-9]::0x0699?*INSTR", &resource_list,&resource_num,description);
+  status = viFindRsrc(resource_manager,"USB[0-9]::0x0699?*INSTR", &resource_list,&resource_num,description);
   if(status!=VI_SUCCESS){
     exit(1);
   }
-  status=viOpen(*resource_manager,description,VI_NULL,VI_NULL,scope_handle);
+  status=viOpen(resource_manager,description,VI_NULL,VI_NULL,&scope_handle);
   if(status!=VI_SUCCESS){
     exit(1);
   }
+  return scope_handle;
 }
 
-void FG_setup (ViStatus status, ViSession * resource_manager, ViSession * functiongen_handle) {
+ViSession FG_setup (ViSession resource_manager) {
+  ViStatus status;
+  ViSession functiongen_handle;
   ViFindList resource_list;
   long unsigned int resource_num;
   char description[VI_FIND_BUFLEN];
-  status = viFindRsrc(*resource_manager,"USB[0-9]::0x1AB1?*INSTR",&resource_list,&resource_num,description);
+  status = viFindRsrc(resource_manager,"USB[0-9]::0x1AB1?*INSTR",&resource_list,&resource_num,description);
   if(status!=VI_SUCCESS){
     exit(1);
   }
-  status=viOpen(*resource_manager,description,VI_NULL,VI_NULL,functiongen_handle);
+  status=viOpen(resource_manager,description,VI_NULL,VI_NULL,&functiongen_handle);
   if(status!=VI_SUCCESS){
     exit(1);
   }
+  return functiongen_handle;
 }
 
 ViSession resource_manager_setup(){
   ViStatus status;
   ViSession resource_manager;
   status = viOpenDefaultRM(&resource_manager);
+  if(status!=VI_SUCCESS){
+    exit(1);
+  }
   return resource_manager;
 }
 
-void Intrument_turnoff (ViSession * functiongen_handle, ViSession * scope_handle) {
+void Intrument_turnoff (ViSession functiongen_handle, ViSession scope_handle) {
   viClose(scope_handle);
   viClose(functiongen_handle);
 }

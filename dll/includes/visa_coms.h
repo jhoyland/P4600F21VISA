@@ -6,9 +6,9 @@ void FG_parameters (ViSession functiongen_handle, int current_channel, float F_n
 void OSC_setup1(ViSession scope_handle,int current_channel, int osc_resol);
 float OSC_setup2(ViSession scope_handle,int current_channel);
 void OSC_gather(ViSession scope_handle,unsigned char * OSC_data);
-void OSC_setup (ViStatus status, ViSession * resource_manager, ViSession * scope_handle);
-void FG_setup (ViStatus status, ViSession * resource_manager, ViSession * functiongen_handle);
+ViSession OSC_setup (ViSession resource_manager);
+ViSession FG_setup (ViSession resource_manager);
 ViSession resource_manager_setup();
-void Intrument_turnoff (ViSession * functiongen_handle, ViSession * scope_handle);
+void Intrument_turnoff (ViSession functiongen_handle, ViSession scope_handle);
 
 #endif

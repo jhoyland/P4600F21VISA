@@ -5,7 +5,7 @@ LDFLAGS   = -shared -v
 MINGW_ENV = mingw64
 PYVERSION = 37
 
-HOMEDIR   = /c/msys64/home/$(USER)/P4600F21VISA
+HOMEDIR   = /c/msys64/home/$(USER)/LCR_Project/P4600F21VISA
 # User directories to search
 BUILDDIR  = $(HOMEDIR)/dll/build
 INCDIR    = $(HOMEDIR)/dll/includes

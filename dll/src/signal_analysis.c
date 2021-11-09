@@ -51,7 +51,6 @@ float SA_Amplitude(float rms){
 void OSC_data_to_voltage (int length, float size_division, unsigned char * input, float * output) {
   double quant = 10.0*size_division/256.0; 
   int i=0;
-  int value=0;
   while (i<(length-6)){
     output[i]=((double)input[i+6]-127.0)*quant;
     i=i+1;
@@ -70,13 +69,13 @@ void V_vs_F_datasave (int F_array_size, float * F_array, float * Vamp_array,char
     fclose(outputfile1);
 }
 
-float data_loop (int FG_channel,int OSC_channel,float F_now, float phase_offset,float V_offset,float fg_volt,int osc_resol,int move_avg_window) {
+float data_loop (ViSession functiongen_handle, ViSession scope_handle, int FG_channel,int OSC_channel,float F_now,float V_offset,float fg_volt,int osc_resol,int move_avg_window) {
     float vertical_scale;
     int OSC_data_size = osc_resol;
     int true_OSC_data_size=OSC_data_size-6;
     unsigned char OSC_data[OSC_data_size];
     float voltage_data[true_OSC_data_size];
-	FG_parameters(functiongen_handle,FG_channel,F_now,fg_volt,V_offset,phase_offset);
+	FG_parameters(functiongen_handle,FG_channel,F_now,fg_volt,V_offset,0);
 	OSC_setup1(scope_handle,OSC_channel,osc_resol);
 	vertical_scale = OSC_setup2(scope_handle,OSC_channel);
 	OSC_gather(scope_handle,OSC_data);
@@ -87,5 +86,6 @@ float data_loop (int FG_channel,int OSC_channel,float F_now, float phase_offset,
 	float mean_smooth = SA_Mean(smooth_data_size,smooth_voltage_data);
 	float rms_smooth = SA_RMS(smooth_data_size,smooth_voltage_data,mean_smooth);
 	float Vamp_array = SA_Amplitude(rms_smooth);
-    return Vamp_array
+	Intrument_turnoff (functiongen_handle, scope_handle);
+    return Vamp_array;
 }

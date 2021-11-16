@@ -21,8 +21,8 @@ dataReady = threading.Event()
 def plot_AMP(FG, OS):
     channel, initialFreq, stepSize, finalFreq = getVariables()
     endThread.clear()
-    global x
-    global y
+    #global x
+    #global y
     x = np.arange(initialFreq, finalFreq, stepSize)
     y = []
     datalink.setSinwave(FG, channel, initialFreq, 5.0, 0.0, 0.0)
@@ -34,21 +34,25 @@ def plot_AMP(FG, OS):
         #set freq on generator with i
         datalink.setSinwave(FG, channel, i, 5.0, 0.0, 0.0)
         datalink.autosetScope(OS)
-        time.sleep(3)
+        time.sleep(4)
         #get amp at i\
         amp = datalink.getAmplitude(OS,channel) 
         
-        lockThread.acquire()     
+        #lockThread.acquire()     
         y.append(amp)
-        lockThread.release()
+        #lockThread.release()
         
         if endThread.is_set():          #if stop button is pressed show graph.
-            dataReady.set()
+            dataReady.set()             #stop button still crashes the program,
+            stopIt()                    #when trying to graph the data.
             #graph.clear()
             #graph.plot(x[0:len(y)],y)
             #canvas.draw()
-            return 
-    dataReady.set()
+            return
+    graph.clear()
+    graph.plot(x[0:len(y)],y)
+    canvas.draw()
+    #dataReady.set()
 
 
 def getVariables():
@@ -62,9 +66,10 @@ def init():
     RM = datalink.initRM()
     FG = datalink.initFG(RM)
     OS = datalink.initScope(RM)
-    t=threading.Thread(target = plot_AMP, args=(FG, OS))
-    t.start()
-    #plot_AMP(FG, OS)
+    plot_AMP(FG, OS)
+    #t=threading.Thread(target = plot_AMP, args=(FG, OS))
+    #t.start()
+    
 #-------------------------------------------------------------------------------
 #threading
 def stopIt():
@@ -72,7 +77,7 @@ def stopIt():
     global y
     endThread.set()
     
-    if dataReady.set():
+    if dataReady.is_set():
         lockThread.acquire()
         graph.clear()
         graph.plot(x[0:len(y)],y)
@@ -131,8 +136,8 @@ canvas.get_tk_widget().pack(side=tk.RIGHT)
 calc_button = tk.Button(ctrlframe,text="Calculate",command=init)
 calc_button.grid(row=4,column=0,columnspan=2,sticky="ew")
 
-stop_button = tk.Button(ctrlframe,text="Stop",command=stopIt)
-stop_button.grid(row=5,column=0,columnspan=2,sticky="ew")
+#stop_button = tk.Button(ctrlframe,text="Stop",command=stopIt)
+#stop_button.grid(row=5,column=0,columnspan=2,sticky="ew")
 #------------------------------------------------------------------------------
 
 

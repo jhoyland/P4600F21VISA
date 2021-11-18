@@ -3,14 +3,15 @@
 #include "calculations.h"
 #include <math.h>
 
-void convertCurveToVoltage(int n, char* rawDataArray, float scale, double* voltages)
+void convertCurveToVoltage(int n, char* rawDataArray, double scale, double* voltages)
 {
 
   for (int i=0;i<n;i++)
   {
-    double tempArray[n];
-    tempArray[i] = rawDataArray[i+6] ;        //rewrite the data to convert char to double and starts at element 6 
-    voltages[i] = tempArray[i]*1/10*scale;    //use the scope sale to 
+   // double tempArray[n];
+    //tempArray[i] = rawDataArray[i+6] ;        //rewrite the data to convert char to double and starts at element 6 
+    //voltages[i] = tempArray[i]/25.6*scale;    //use the scope sale to 
+    voltages[i] = (double)rawDataArray[i+6]/10*scale;
   }
 }
 

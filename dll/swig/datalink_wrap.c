@@ -2665,11 +2665,10 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
-#define SWIGTYPE_p_ViSession swig_types[0]
-#define SWIGTYPE_p_ViStatus swig_types[1]
-#define SWIGTYPE_p_char swig_types[2]
-static swig_type_info *swig_types[4];
-static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
+#define SWIGTYPE_p_char swig_types[0]
+#define SWIGTYPE_p_unsigned_int swig_types[1]
+static swig_type_info *swig_types[3];
+static swig_module_info swig_module = {swig_types, 2, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2705,6 +2704,13 @@ static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
 #include "instrumentfunctions.h"
 #include "visa.h"
 	
+
+
+SWIGINTERNINLINE PyObject*
+  SWIG_From_unsigned_SS_int  (unsigned int value)
+{
+  return PyInt_FromSize_t((size_t) value);
+}
 
 
 SWIGINTERN int
@@ -2753,6 +2759,116 @@ SWIG_AsVal_double (PyObject *obj, double *val)
 }
 
 
+#include <limits.h>
+#if !defined(SWIG_NO_LLONG_MAX)
+# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
+#   define LLONG_MAX __LONG_LONG_MAX__
+#   define LLONG_MIN (-LLONG_MAX - 1LL)
+#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
+# endif
+#endif
+
+
+#include <float.h>
+
+
+#include <math.h>
+
+
+SWIGINTERNINLINE int
+SWIG_CanCastAsInteger(double *d, double min, double max) {
+  double x = *d;
+  if ((min <= x && x <= max)) {
+   double fx = floor(x);
+   double cx = ceil(x);
+   double rd =  ((x - fx) < 0.5) ? fx : cx; /* simple rint */
+   if ((errno == EDOM) || (errno == ERANGE)) {
+     errno = 0;
+   } else {
+     double summ, reps, diff;
+     if (rd < x) {
+       diff = x - rd;
+     } else if (rd > x) {
+       diff = rd - x;
+     } else {
+       return 1;
+     }
+     summ = rd + x;
+     reps = diff/summ;
+     if (reps < 8*DBL_EPSILON) {
+       *d = rd;
+       return 1;
+     }
+   }
+  }
+  return 0;
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_unsigned_SS_long (PyObject *obj, unsigned long *val) 
+{
+#if PY_VERSION_HEX < 0x03000000
+  if (PyInt_Check(obj)) {
+    long v = PyInt_AsLong(obj);
+    if (v >= 0) {
+      if (val) *val = v;
+      return SWIG_OK;
+    } else {
+      return SWIG_OverflowError;
+    }
+  } else
+#endif
+  if (PyLong_Check(obj)) {
+    unsigned long v = PyLong_AsUnsignedLong(obj);
+    if (!PyErr_Occurred()) {
+      if (val) *val = v;
+      return SWIG_OK;
+    } else {
+      PyErr_Clear();
+      return SWIG_OverflowError;
+    }
+  }
+#ifdef SWIG_PYTHON_CAST_MODE
+  {
+    int dispatch = 0;
+    unsigned long v = PyLong_AsUnsignedLong(obj);
+    if (!PyErr_Occurred()) {
+      if (val) *val = v;
+      return SWIG_AddCast(SWIG_OK);
+    } else {
+      PyErr_Clear();
+    }
+    if (!dispatch) {
+      double d;
+      int res = SWIG_AddCast(SWIG_AsVal_double (obj,&d));
+      if (SWIG_IsOK(res) && SWIG_CanCastAsInteger(&d, 0, ULONG_MAX)) {
+	if (val) *val = (unsigned long)(d);
+	return res;
+      }
+    }
+  }
+#endif
+  return SWIG_TypeError;
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_unsigned_SS_int (PyObject * obj, unsigned int *val)
+{
+  unsigned long v;
+  int res = SWIG_AsVal_unsigned_SS_long (obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v > UINT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = (unsigned int)(v);
+    }
+  }  
+  return res;
+}
+
+
   #define SWIG_From_double   PyFloat_FromDouble 
 
 #ifdef __cplusplus
@@ -2762,26 +2878,29 @@ SWIGINTERN PyObject *_wrap_openInstruments(PyObject *SWIGUNUSEDPARM(self), PyObj
   PyObject *resultobj = 0;
   ViSession *arg1 = (ViSession *) 0 ;
   ViSession *arg2 = (ViSession *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
+  ViSession temp1 ;
+  int res1 = SWIG_TMPOBJ ;
+  ViSession temp2 ;
+  int res2 = SWIG_TMPOBJ ;
   ViStatus result;
   
-  if (!SWIG_Python_UnpackTuple(args, "openInstruments", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ViSession, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "openInstruments" "', argument " "1"" of type '" "ViSession *""'"); 
+  arg1 = &temp1;
+  arg2 = &temp2;
+  if (!SWIG_Python_UnpackTuple(args, "openInstruments", 0, 0, 0)) SWIG_fail;
+  result = (ViStatus)openInstruments(arg1,arg2);
+  resultobj = SWIG_From_unsigned_SS_int((unsigned int)(result));
+  if (SWIG_IsTmpObj(res1)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_unsigned_SS_int((*arg1)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res1) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg1), SWIGTYPE_p_unsigned_int, new_flags));
   }
-  arg1 = (ViSession *)(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_ViSession, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "openInstruments" "', argument " "2"" of type '" "ViSession *""'"); 
+  if (SWIG_IsTmpObj(res2)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_unsigned_SS_int((*arg2)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res2) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg2), SWIGTYPE_p_unsigned_int, new_flags));
   }
-  arg2 = (ViSession *)(argp2);
-  result = openInstruments(arg1,arg2);
-  resultobj = SWIG_NewPointerObj((ViStatus *)memcpy((ViStatus *)calloc(1,sizeof(ViStatus)),&result,sizeof(ViStatus)), SWIGTYPE_p_ViStatus, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -2795,10 +2914,10 @@ SWIGINTERN PyObject *_wrap_getAmplitude(PyObject *SWIGUNUSEDPARM(self), PyObject
   ViSession arg3 ;
   double val1 ;
   int ecode1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  void *argp3 ;
-  int res3 = 0 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
   PyObject *swig_obj[3] ;
   double result;
   
@@ -2808,28 +2927,16 @@ SWIGINTERN PyObject *_wrap_getAmplitude(PyObject *SWIGUNUSEDPARM(self), PyObject
     SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "getAmplitude" "', argument " "1"" of type '" "double""'");
   } 
   arg1 = (double)(val1);
-  {
-    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_ViSession,  0 );
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "getAmplitude" "', argument " "2"" of type '" "ViSession""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "getAmplitude" "', argument " "2"" of type '" "ViSession""'");
-    } else {
-      arg2 = *((ViSession *)(argp2));
-    }
-  }
-  {
-    res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_ViSession,  0 );
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "getAmplitude" "', argument " "3"" of type '" "ViSession""'"); 
-    }  
-    if (!argp3) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "getAmplitude" "', argument " "3"" of type '" "ViSession""'");
-    } else {
-      arg3 = *((ViSession *)(argp3));
-    }
-  }
+  ecode2 = SWIG_AsVal_unsigned_SS_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "getAmplitude" "', argument " "2"" of type '" "ViSession""'");
+  } 
+  arg2 = (ViSession)(val2);
+  ecode3 = SWIG_AsVal_unsigned_SS_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "getAmplitude" "', argument " "3"" of type '" "ViSession""'");
+  } 
+  arg3 = (ViSession)(val3);
   result = (double)getAmplitude(arg1,arg2,arg3);
   resultobj = SWIG_From_double((double)(result));
   return resultobj;
@@ -2840,7 +2947,7 @@ fail:
 
 static PyMethodDef SwigMethods[] = {
 	 { "SWIG_PyInstanceMethod_New", SWIG_PyInstanceMethod_New, METH_O, NULL},
-	 { "openInstruments", _wrap_openInstruments, METH_VARARGS, NULL},
+	 { "openInstruments", _wrap_openInstruments, METH_NOARGS, NULL},
 	 { "getAmplitude", _wrap_getAmplitude, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
@@ -2852,24 +2959,20 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
-static swig_type_info _swigt__p_ViSession = {"_p_ViSession", "ViSession *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_ViStatus = {"_p_ViStatus", "ViStatus *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_unsigned_int = {"_p_unsigned_int", "ViSession *|unsigned int *|ViStatus *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
-  &_swigt__p_ViSession,
-  &_swigt__p_ViStatus,
   &_swigt__p_char,
+  &_swigt__p_unsigned_int,
 };
 
-static swig_cast_info _swigc__p_ViSession[] = {  {&_swigt__p_ViSession, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_ViStatus[] = {  {&_swigt__p_ViStatus, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_unsigned_int[] = {  {&_swigt__p_unsigned_int, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
-  _swigc__p_ViSession,
-  _swigc__p_ViStatus,
   _swigc__p_char,
+  _swigc__p_unsigned_int,
 };
 
 

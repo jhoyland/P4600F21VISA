@@ -8,6 +8,8 @@
 %}
 %include <typemaps.i>
 
+typedef unsigned int ViSession;
+typedef unsigned int ViStatus;
 
 ViStatus openInstruments(ViSession *OUTPUT, ViSession *OUTPUT);
 

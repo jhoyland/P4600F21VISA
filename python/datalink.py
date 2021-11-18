@@ -62,8 +62,8 @@ class _SwigNonDynamicMeta(type):
 
 
 
-def openInstruments(arg1: "ViSession *", arg2: "ViSession *") -> "ViStatus":
-    return _datalink.openInstruments(arg1, arg2)
+def openInstruments() -> "unsigned int *, unsigned int *":
+    return _datalink.openInstruments()
 
 def getAmplitude(frequency: "double", scope_handle: "ViSession", func_handle: "ViSession") -> "double":
     return _datalink.getAmplitude(frequency, scope_handle, func_handle)

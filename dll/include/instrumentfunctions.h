@@ -11,14 +11,10 @@ ViStatus openInstruments(ViSession *scope_handle, ViSession *func_handle);
 
 double getAmplitude(double frequency, ViSession scope_handle, ViSession func_handle);
 
-void setSinWave(ViSession handle, int channel, double frequency, double amplitude);
+void setSinWave(ViSession handle, int channel, double frequency);
 void getInstrumentName(ViSession handle, char* returned_message);
 double getScopeScale(ViSession handle);
 void getNewCurve(ViSession handle, char* rawDataArray);
 void autoSetScope(ViSession handle);
-
-
-
-
 
 #endif

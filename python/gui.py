@@ -14,21 +14,33 @@ import threading
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-endThread = threading.Event()
-lockThread = threading.Lock()
+
+endWorkerThread = threading.Event()
+lockWorkerThread = threading.Lock()
+
+endPlotThread = threading.Event()
+lockPlotThread = threading.Lock()
+
 dataReady = threading.Event()
+programFinish = tk.Event()
+x=[]
+y=[]
 
 def plot_AMP(FG, OS):
     channel, initialFreq, stepSize, finalFreq = getVariables()
-    endThread.clear()
-    #global x
-    #global y
+    endWorkerThread.clear()
+    endPlotThread.clear()
+    dataReady.clear()
+    graph.clear()
+    global x
+    global y
     x = np.arange(initialFreq, finalFreq, stepSize)
     y = []
     datalink.setSinwave(FG, channel, initialFreq, 5.0, 0.0, 0.0)
     datalink.displayWave(FG, channel)  #output the signal
     datalink.autosetScope(OS)       #autoset
     time.sleep(3)
+    
     #calculation
     for i in x: 
         #set freq on generator with i
@@ -38,21 +50,15 @@ def plot_AMP(FG, OS):
         #get amp at i\
         amp = datalink.getAmplitude(OS,channel) 
         
-        #lockThread.acquire()     
+        #lockWorkerThread.acquire()     
         y.append(amp)
-        #lockThread.release()
+        #lockWorkerThread.release()
         
-        if endThread.is_set():          #if stop button is pressed show graph.
-            dataReady.set()             #stop button still crashes the program,
-            stopIt()                    #when trying to graph the data.
-            #graph.clear()
-            #graph.plot(x[0:len(y)],y)
-            #canvas.draw()
-            return
-    graph.clear()
-    graph.plot(x[0:len(y)],y)
-    canvas.draw()
-    #dataReady.set()
+        if endWorkerThread.is_set():          #if stop button is pressed show graph.
+            dataReady.set()                 #stop button doesnt crash the program
+            break
+    dataReady.set()
+    #graph doesnt plot when loop is done
 
 
 def getVariables():
@@ -66,24 +72,24 @@ def init():
     RM = datalink.initRM()
     FG = datalink.initFG(RM)
     OS = datalink.initScope(RM)
-    plot_AMP(FG, OS)
-    #t=threading.Thread(target = plot_AMP, args=(FG, OS))
-    #t.start()
-    
+    #plot_AMP(FG, OS)
+    t=threading.Thread(target=plot_AMP, args=(FG,OS))
+    t.start()
+
 #-------------------------------------------------------------------------------
 #threading
 def stopIt():
-    global x
-    global y
-    endThread.set()
-    
-    if dataReady.is_set():
-        lockThread.acquire()
+    endWorkerThread.set()
+    plotGraph(x, y)
+        
+        
+def plotGraph(x, y):
+    if dataReady.is_set:
         graph.clear()
+        #lockPlotThread.acquire()
         graph.plot(x[0:len(y)],y)
         canvas.draw()
-        lockThread.release()
-    
+        #lockPlotThread.release()
 #------------------------------------------------------------------------------
 root = tk.Tk()
 root.wm_title("LRC")
@@ -136,11 +142,12 @@ canvas.get_tk_widget().pack(side=tk.RIGHT)
 calc_button = tk.Button(ctrlframe,text="Calculate",command=init)
 calc_button.grid(row=4,column=0,columnspan=2,sticky="ew")
 
-#stop_button = tk.Button(ctrlframe,text="Stop",command=stopIt)
-#stop_button.grid(row=5,column=0,columnspan=2,sticky="ew")
+stop_button = tk.Button(ctrlframe,text="Stop",command=stopIt)
+stop_button.grid(row=5,column=0,columnspan=2,sticky="ew")
 #------------------------------------------------------------------------------
-
-
+#Start some thread
+#plotThread=threading.Thread(target=plotGraph, args=(x,y))
+#plotThread.start()
 
 
 

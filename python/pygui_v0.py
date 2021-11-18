@@ -4,7 +4,6 @@ Created on Tue Oct 26 09:39:42 2021
 Test out functions in python
 @author: EPsajd
 """
-# issue accepting python float values as argument 
 # REMEMBER: in dll file make swig and make dll 
 
 import datalink as dl 
@@ -21,16 +20,13 @@ root.wm_title("Scope/FG Control")
 scope_handle = 0
 fg_handle = 0
 
-
-t = threading.Thread(target = Graph)
-t.start()
-
 # function to gen resource man, init scope and fg
 var_ch = tk.StringVar(value="1")
 #status for initialization of devices
 var_status = tk.StringVar(value="Not Connected")
 
 #create graphspace
+"""
 fig= Figure(figsize=(5,4),dpi=100)
 
 graph= fig.add_subplot()
@@ -40,7 +36,7 @@ graph.set_title("Frequency vs. Amplitude")
 
 canvas = FigureCanvasTkAgg(fig, master=root)
 canvas.get_tk_widget().pack(side=tk.RIGHT)
-
+"""
 
 def quit():
     root.destroy()
@@ -67,15 +63,27 @@ var_fend = tk.StringVar(value="50")
 var_fint = tk.StringVar(value="5")
 var_dat = tk.StringVar(value="0")
 
-def Graph():
+StopData = threading.Event()
+StopGraph = threading.Event()
+"""
+print(StopData.is_set())
+StopData.set()
+print(StopData.is_set())
+StopData.clear()
+print(StopData.is_set())
+"""
+def GraphData():
     global fg_handle
     global scope_handle
+    global StopData
+    global frequencies
+    global amplitudes
     start = int(var_fstart.get())
     end = int(var_fend.get())
     interval = int(var_fint.get())
     ch = int(var_ch.get())
-    #create thread
-    
+    #clear stop
+    StopData.clear()
     # set amp, offset, etc, to zero 
     dl.setSinWave(fg_handle, ch, 5, 100, 0, 0)
     
@@ -84,30 +92,73 @@ def Graph():
     amplitudes = [0] * len(frequencies)
     n = 0
     for i in range(start, end, interval):
-        #set the frequency 
-        dl.setFreq(fg_handle, ch, i)
-        #autofocus the scope 
-        dl.Scopeset(scope_handle)
-        time.sleep(10)
-        #take a measurement, calculate and store amplitude
-        amplitudes[n] = dl.Ampget(scope_handle, ch) 
-        n += 1
+        if (StopData.is_set()):
+            break
+        else:
+            #set the frequency 
+            dl.setFreq(fg_handle, ch, i)
+            #autofocus the scope 
+            dl.Scopeset(scope_handle)
+            time.sleep(10)
+            #take a measurement, calculate and store amplitude
+            amplitudes[n] = dl.Ampget(scope_handle, ch) 
+            n += 1
+        
+    print("Loop Broken!")
+    print(frequencies,amplitudes)
+
+#create a function to call new thread for graph only 
+#this thread will start running immediatly and then 
+#update when neeeded
+def Graph():
+    global frequencies
+    global amplitudes
+    fig= Figure(figsize=(5,4),dpi=100)
     
-    #initialize graph
-    graph.clear()
+     
+    graph= fig.add_subplot()
     graph.set_xlabel("Frequency")
     graph.set_ylabel("Amplitude")
     graph.set_title("Frequency vs. Amplitude")
-    graph.plot(frequencies, amplitudes)
-    canvas.draw()
 
-#threading info for graph function
-t = threading.Thread(target = Graph)
-t.start()
+    canvas = FigureCanvasTkAgg(fig, master=root)
+    canvas.get_tk_widget().pack(side=tk.RIGHT)
+    
+    #get frequencies and amplitudes to continuously update 
+    while(StopGraph.is_set() == 0):
+        time.sleep(10)
+        graph.clear()
+        graph.set_xlabel("Frequency")
+        graph.set_ylabel("Amplitude")
+        graph.set_title("Frequency vs. Amplitude")
+        graph.plot(frequencies, amplitudes)
+        canvas.draw()
+
+def StartGraph():
+    global t1
+    t1 = threading.Thread(Graph)
+    t1.start()
+    
+def StopGraphfunc():
+    global t1
+    global StopGraph
+    StopGraph.set() 
+
+def Datathread(): 
+    global t
+    t = threading.Thread(target = GraphData)
+    t.start()
+
+def StopFunc(): 
+    global t
+    global StopData
+    StopData.set() 
     
 def Auto():
     global scope_handle
     dl.Scopeset(scope_handle)
+
+
 
 ctrlframe = tk.Frame(root)
 ctrlframe.pack(side=tk.LEFT,anchor=tk.NW)
@@ -131,8 +182,8 @@ label_fstart =  tk.Label(ctrlframe,text = "Start Freq.", width=15)
 label_fend =  tk.Label(ctrlframe,text = "End Freq.", width=15)
 label_fint =  tk.Label(ctrlframe,text = "Intervals", width=15)
 label_auto =  tk.Button(ctrlframe,text = "Autoset", width=30, command = Auto)
-label_dat = tk.Button(ctrlframe,text = "Collect Data", width=30, command = Graph)
-label_stop = tk.Button(ctrlframe,text = "Stop Collecting", width=30, command = EndGraph)
+label_dat = tk.Button(ctrlframe,text = "Collect Data", width=30, command = Datathread)
+label_stop = tk.Button(ctrlframe,text = "Stop Collecting", width=30, command = StopFunc)
 label_exit = tk.Button(ctrlframe,text = "Exit", width=30, command = quit)
 
 

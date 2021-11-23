@@ -19,13 +19,13 @@ root.wm_title("Scope/FG Control")
 
 scope_handle = 0
 fg_handle = 0
-
 # function to gen resource man, init scope and fg
 var_ch = tk.StringVar(value="1")
 #status for initialization of devices
 var_status = tk.StringVar(value="Not Connected")
 
-#create graphspace
+
+
 """
 fig= Figure(figsize=(5,4),dpi=100)
 
@@ -60,18 +60,16 @@ def Initdevices():
 
 var_fstart = tk.StringVar(value="1")
 var_fend = tk.StringVar(value="50")
-var_fint = tk.StringVar(value="5")
+var_fint = tk.StringVar(value="10")
 var_dat = tk.StringVar(value="0")
 
 StopData = threading.Event()
 StopGraph = threading.Event()
-"""
-print(StopData.is_set())
-StopData.set()
-print(StopData.is_set())
-StopData.clear()
-print(StopData.is_set())
-"""
+NewData = threading.Event()
+
+frequencies = np.arange(0,100,1, dtype = int)
+amplitudes = [0] * len(frequencies)
+
 def GraphData():
     global fg_handle
     global scope_handle
@@ -88,8 +86,10 @@ def GraphData():
     dl.setSinWave(fg_handle, ch, 5, 100, 0, 0)
     
     #array of frequencies
+
     frequencies = np.arange(start, end, interval, dtype=int)
     amplitudes = [0] * len(frequencies)
+    NewData.set()
     n = 0
     for i in range(start, end, interval):
         if (StopData.is_set()):
@@ -101,8 +101,13 @@ def GraphData():
             dl.Scopeset(scope_handle)
             time.sleep(10)
             #take a measurement, calculate and store amplitude
-            amplitudes[n] = dl.Ampget(scope_handle, ch) 
+            a = dl.Ampget(scope_handle, ch) 
+            print(a)
+            
+            amplitudes[n] = a
+            
             n += 1
+            NewData.set()
         
     print("Loop Broken!")
     print(frequencies,amplitudes)
@@ -114,7 +119,7 @@ def Graph():
     global frequencies
     global amplitudes
     fig= Figure(figsize=(5,4),dpi=100)
-    
+
      
     graph= fig.add_subplot()
     graph.set_xlabel("Frequency")
@@ -123,20 +128,20 @@ def Graph():
 
     canvas = FigureCanvasTkAgg(fig, master=root)
     canvas.get_tk_widget().pack(side=tk.RIGHT)
-    
     #get frequencies and amplitudes to continuously update 
-    while(StopGraph.is_set() == 0):
-        time.sleep(10)
-        graph.clear()
-        graph.set_xlabel("Frequency")
-        graph.set_ylabel("Amplitude")
-        graph.set_title("Frequency vs. Amplitude")
-        graph.plot(frequencies, amplitudes)
-        canvas.draw()
+    while not StopGraph.is_set():
+        if NewData.is_set():
+            graph.clear()
+            graph.set_xlabel("Frequency")
+            graph.set_ylabel("Amplitude")
+            graph.set_title("Frequency vs. Amplitude")
+            graph.plot(frequencies, amplitudes)
+            canvas.draw_idle()
+            NewData.clear()
 
 def StartGraph():
     global t1
-    t1 = threading.Thread(Graph)
+    t1 = threading.Thread(target=Graph)
     t1.start()
     
 def StopGraphfunc():
@@ -158,7 +163,7 @@ def Auto():
     global scope_handle
     dl.Scopeset(scope_handle)
 
-
+StartGraph()
 
 ctrlframe = tk.Frame(root)
 ctrlframe.pack(side=tk.LEFT,anchor=tk.NW)

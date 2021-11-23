@@ -69,7 +69,7 @@ double rms(double num[], int n)
 	double sum = 0, rms = 0;
 	for(int i=0; i<n; i++) //get the sum of squared values in array
 	{
-		sum += pow(num[n],2);
+		sum += pow(num[i],2);
 	}
 	rms = sqrt(sum/n);
 

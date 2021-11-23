@@ -136,17 +136,17 @@ double Ampget(ViSession scope_handle, int channel)
 
  	//print data to a file 
 
- 	//FILE* datafile = fopen("curve.dat","w");
+ 	FILE* datafile = fopen("curve.dat","w");
  	// attempt to turn data into double
  	double ddata[2500];
 
   	for(i=0; i<2500; i++)
  	{  
-   		ddata[i] = (10.0/255.0) * data[i];
-    	//fprintf(datafile,"%f \n",ddata[i]);
+   		ddata[i] = (10.0/255.0) * (double)data[i];
+    	fprintf(datafile,"%f %d\n",ddata[i],data[i]);
   	}
- 	//fclose(datafile);
- 	//NOW that we have the data in voltage values we can get the amplitude
+  	fprintf(datafile,"%f\n",rms(ddata,2500));
+ 	fclose(datafile);
  	double amp; 
  	amp = rms(ddata, 2500) * M_SQRT2; 
  	return amp;

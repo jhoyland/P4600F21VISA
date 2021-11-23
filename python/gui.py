@@ -8,30 +8,25 @@ import datalink
 import tkinter as tk
 import numpy as np
 import time
-import math
+import csv
 import threading
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
-endWorkerThread = threading.Event()
-lockWorkerThread = threading.Lock()
-
-endPlotThread = threading.Event()
-lockPlotThread = threading.Lock()
+endThread = threading.Event()
+lockThread = threading.Lock()
 
 dataReady = threading.Event()
-programFinish = tk.Event()
+
 x=[]
 y=[]
 
 def plot_AMP(FG, OS):
     channel, initialFreq, stepSize, finalFreq = getVariables()
-    endWorkerThread.clear()
-    endPlotThread.clear()
-    dataReady.clear()
-    graph.clear()
+
+
     global x
     global y
     x = np.arange(initialFreq, finalFreq, stepSize)
@@ -50,14 +45,17 @@ def plot_AMP(FG, OS):
         #get amp at i\
         amp = datalink.getAmplitude(OS,channel) 
         
-        #lockWorkerThread.acquire()     
+        lockThread.acquire()     
         y.append(amp)
-        #lockWorkerThread.release()
+        lockThread.release()
         
-        if endWorkerThread.is_set():          #if stop button is pressed show graph.
+        if endThread.is_set():          #if stop button is pressed show graph.
             dataReady.set()                 #stop button doesnt crash the program
             break
-    dataReady.set()
+        
+    dataReady.set()                     #when loop is done data is ready
+    
+    plotGraph()
     #graph doesnt plot when loop is done
 
 
@@ -73,23 +71,44 @@ def init():
     FG = datalink.initFG(RM)
     OS = datalink.initScope(RM)
     #plot_AMP(FG, OS)
+    label_status.config(text="RUNNING...")
+    endThread.clear()
+    dataReady.clear()
     t=threading.Thread(target=plot_AMP, args=(FG,OS))
     t.start()
 
 #-------------------------------------------------------------------------------
 #threading
 def stopIt():
-    endWorkerThread.set()
-    plotGraph(x, y)
+    endThread.set()
         
         
-def plotGraph(x, y):
-    if dataReady.is_set:
+def plotGraph():
+    
+    global x
+    global y 
+    global label_status
+    
+    if dataReady.is_set():
         graph.clear()
-        #lockPlotThread.acquire()
+        lockThread.acquire()
         graph.plot(x[0:len(y)],y)
-        canvas.draw()
-        #lockPlotThread.release()
+        lockThread.release()
+        
+        canvas.draw_idle()
+        label_status.config(text="DONE")    
+        dataReady.clear()
+        
+        
+def saveData():
+    global x
+    global y
+    with open('data.txt', 'w') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip(x,y))
+    
+    f.close()
+
 #------------------------------------------------------------------------------
 root = tk.Tk()
 root.wm_title("LRC")
@@ -107,7 +126,7 @@ var_Channel = tk.StringVar(value="1")
 var_Freq = tk.StringVar(value="500")
 var_step = tk.StringVar(value="100")
 var_endFreq = tk.StringVar(value="1000")
-var_amp = tk.StringVar(value="Get AMP")
+
 
 entry_Channel = tk.Entry(ctrlframe,text="Channel",textvariable=var_Channel,width=10)
 entry_Freq = tk.Entry(ctrlframe,text="Freq",textvariable=var_Freq,width=10)
@@ -128,11 +147,12 @@ entry_endFreq.grid(row=3, column=1,padx=(0,10),pady=(0,10))
 #x_slide = tk.Scale(ctrlframe,variable=var_x,orient='horizontal',from_=0,to=1,resolution=0.1)
 #x_slide.grid(row=3,column=1,padx=(0,10),pady=(10,10))
 
-label_amp = tk.Label(ctrlframe,text="AMP",textvariable=var_amp)
-label_amp.grid(row=5,column=0,columnspan=2,sticky="ew",pady=(10,10))
+label_status = tk.Label(ctrlframe,text="READY")
+label_status.grid(row=6,column=0,columnspan=2,sticky="ew",pady=(10,10))
 
 fig = Figure(figsize=(5,4),dpi=100)
 graph = fig.add_subplot()
+
 
 canvas = FigureCanvasTkAgg(fig,master=root)
 canvas.get_tk_widget().pack(side=tk.RIGHT)
@@ -144,10 +164,15 @@ calc_button.grid(row=4,column=0,columnspan=2,sticky="ew")
 
 stop_button = tk.Button(ctrlframe,text="Stop",command=stopIt)
 stop_button.grid(row=5,column=0,columnspan=2,sticky="ew")
+
+save_button = tk.Button(ctrlframe, text="Save Data", command=saveData)
+save_button.grid(row=7,column=0,columnspan=2,sticky="ew")
+
 #------------------------------------------------------------------------------
-#Start some thread
-#plotThread=threading.Thread(target=plotGraph, args=(x,y))
-#plotThread.start()
+#Start a plotting thread on its own in the background running continuously 
+#plotGraph checks if data is ready to be graphed
+plotThread = threading.Thread(target=plotGraph)
+plotThread.start()
 
 
 

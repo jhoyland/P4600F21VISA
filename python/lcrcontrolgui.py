@@ -12,52 +12,180 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import lcrcontrol as lcr
 import threading
+import time
+import pandas as pd
+from datetime import datetime
 
 
-fig = Figure(figsize = (5,4), dpi = 100)
-graph = fig.add_subplot()
-endThread = threading.Event()
-
-stop_var = 0
-start_var = 0
-start = 0.0
-stop = 0.0
-incr = 0.0
-amp = 0.0
-offset = 0.0
-phase = 0.0
-
-def stop_button_func():
-    endThread.set()
-    
-def runProg():
-    global thread, start_var, start, stop, incr, amp, offset, phase
-    while(1):
-        frequencies = np.arange(start, stop, incr)
-        ampData = []
-        
-        for freq in frequencies:
-            if endThread.is_set():
-                return
-            ampvalue = 0.0
-            ampvalue = lcr.theController(freq, amp, offset, phase)
-            ampData.append(ampvalue)
-            
-            x = frequencies[0:len(ampData)]
-            y = ampData
-            graph.clear()
-            graph.plot(x,y)
-                     
-def run():    
-    endThread.clear()
-    thread = threading.Thread(target = runProg, args=())
-    thread.start()
-        
 
 
 root = tk.Tk()
 
 root.wm_title("Main Window")
+
+
+endCalcThread = threading.Event()
+endGraphThread = threading.Event()
+closeProgram = threading.Event()
+paramlock = threading.Lock()
+graphlock = threading.Lock()
+graphlock.acquire()
+
+fig = Figure(figsize = (5,4), dpi = 100)
+graph = fig.add_subplot()
+graph.set_ylabel('Amplitude (Volts)')
+graph.set_xlabel('Frequency (Hz)')
+graph.set_title('Amplitude data')
+canvas = FigureCanvasTkAgg(fig, master=root)
+canvas.get_tk_widget().pack(side=tk.RIGHT)
+
+xAxis = []
+yAxis = []
+df = pd.DataFrame(columns=['Frequency', 'Amplitude'])
+
+def stop_button_func():
+    endCalcThread.set()
+    
+def switchButtonState():
+    if (save_param_button['state'] == tk.NORMAL):
+        save_param_button['state'] = tk.DISABLED
+    else:
+        save_param_button['state'] = tk.NORMAL
+        
+    if (save_data_button['state'] == tk.NORMAL):
+        save_data_button['state'] = tk.DISABLED
+    else:
+        save_data_button['state'] = tk.NORMAL
+    
+def runProg():
+    global start, stop, incr, amp, offset, phase, xAxis, yAxis
+    while(1):
+
+        if endCalcThread.is_set():
+            break
+        switchButtonState()
+        
+        frequencies = np.arange(start, (stop + incr*0.1), incr)
+        length = len(frequencies)
+        lastFreq = frequencies[length-1]
+
+        for i, freq in enumerate(frequencies):
+            if i != 0:
+                graphlock.acquire()
+                
+            if endCalcThread.is_set():
+                break
+                           
+            ampvalue = 0.0
+            ampvalue = lcr.theController(freq, amp, offset, phase)
+            
+            if endCalcThread.is_set():
+                break
+                
+            xAxis.append(freq)
+            yAxis.append(ampvalue)
+            graphlock.release()
+            time.sleep(0.2)
+            
+            
+            if(freq == lastFreq):
+                endCalcThread.set()
+                endGraphThread.set()
+                switchButtonState()
+                time.sleep(0.2)
+                
+                          
+def run():
+    global start, stop, incr, amp, offset, phase, xAxis, yAxis
+    paramlock.acquire()
+    start = float(var_start_freq.get())
+    stop = float(var_end_freq.get())
+    incr = float(var_incr_freq.get())
+    amp = float(var_amp.get())
+    offset = float(var_offset.get())
+    phase = float(var_phase.get())
+    paramlock.release()
+    xAxis = []
+    yAxis = []
+    
+
+    endCalcThread.clear()
+    endGraphThread.clear()
+    thread = threading.Thread(target = runProg, args=())
+    thread.start()  
+    graphThread = threading.Thread(target = graphData, args=())
+    graphThread.start()  
+    
+    
+def graphData():
+    global xAxis, yAxis
+    
+    while(1):
+        graphlock.acquire()
+        
+        if endGraphThread.is_set():
+            break
+        
+        graph.clear()
+        graph.plot(xAxis,yAxis)
+        
+        canvas.draw_idle()
+        
+        graphlock.release()
+        time.sleep(0.5)
+
+
+def quitButton():
+    endCalcThread.set()
+    endGraphThread.set()
+    closeProgram.set()
+    if graphlock.locked() == True:
+        graphlock.release()
+
+    root.destroy()
+
+#def SavingThread():
+#    while(closeProgram.is_set() == False):
+#        time.sleep(2)
+#        if saveParameters.is_set():
+#            paramlock.acquire()
+#            parameters = var_start_freq.get()
+#            f = open("saved_parameters.txt", "w")
+#            f.write(parameters)
+#            f.close()
+#            saveParameters.clear()
+#            paramlock.release()
+#        
+#        if saveData.is_set():
+#            df.to_excel("Amplitude_data_",start,"_",stop,".xlsx")
+#            saveData.clear()
+
+def saveParam():
+        
+    print("saving parameters")
+    parameters = var_start_freq.get()+", "+var_end_freq.get()+", "+var_incr_freq.get()+", "+var_amp.get()+", "+var_offset.get()+", "+var_phase.get() 
+    f = open("saved_parameters.txt", "w")
+    f.write(parameters)
+    f.close()
+    
+
+def saveData():
+    if endCalcThread.is_set():
+        print("saving data")
+        for x, y in zip(xAxis, yAxis):
+            df.loc[len(df.index)] = [x, y]
+        
+        now = datetime.now() 
+        date_time = now.strftime("__%m_%d_%Y__%H_%M_%S")
+        name = "Amplitude_data_"+var_start_freq.get()+"_"+var_end_freq.get()+date_time+".xlsx"
+        print(name)
+        df.to_excel(name, index=False)
+        endCalcThread.clear()
+            
+    
+    
+
+
 
 control_frame = tk.Frame(root)
 control_frame.pack(side=tk.LEFT)
@@ -88,7 +216,6 @@ entry_incr_freq = tk.Entry(control_frame, textvariable=var_incr_freq, width=15)
 entry_amp = tk.Entry(control_frame, textvariable=var_amp, width=15)
 entry_offset = tk.Entry(control_frame, textvariable=var_offset, width=15)
 entry_phase = tk.Entry(control_frame, textvariable=var_phase, width=15)
-
 
 label_freq_min = tk.Label(control_frame, text="50Hz - 25MHz", width=15)
 label_freq_max = tk.Label(control_frame, text="50Hz - 25MHz", width=15)
@@ -121,26 +248,15 @@ label_volt_offset.grid(row=7, column=2, padx=(0,10))
 label_volt_phase.grid(row=8, column=2, padx=(0,10))
 
 
-canvas = FigureCanvasTkAgg(fig, master=root)
-canvas.get_tk_widget().pack(side=tk.RIGHT)
-
-stop_var = 0
-start_var = 0
-start = float(var_start_freq.get())
-stop = float(var_end_freq.get())
-incr = float(var_incr_freq.get())
-amp = float(var_amp.get())
-offset = float(var_offset.get())
-phase = float(var_phase.get())
-
-
 calc_button = tk.Button(control_frame, text="Run", width=20, command = run)
-calc_button.grid(row=10, column=0, columnspan=3, pady=(3,3))
-
 stop_button = tk.Button(control_frame, text="Stop", width=20, command = stop_button_func)
+quit_button = tk.Button(control_frame, text="Quit", width=20, fg="red", command = quitButton)
+save_param_button = tk.Button(control_frame, text="Save Parameters", width=20, command = saveParam)
+save_data_button = tk.Button(control_frame, text="Save Data", width=20, command = saveData)
+calc_button.grid(row=10, column=0, columnspan=3, pady=(3,3))
 stop_button.grid(row=11, column=0, columnspan=3, pady=(3,3))
-
-quit_button = tk.Button(control_frame, text="Quit", width=20, fg="red", command = root.destroy)
-quit_button.grid(row=12, column=0, columnspan=3, pady=(3,3))
+save_param_button.grid(row=12, column=0, columnspan=3, pady=(3,3))
+save_data_button.grid(row=13, column=0, columnspan=3, pady=(3,3))
+quit_button.grid(row=14, column=0, columnspan=3, pady=(3,3))
 
 tk.mainloop()

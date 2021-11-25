@@ -46,8 +46,8 @@ double theController(double freq, double amp, double offset, double phase)
 	}
 
 
-	status = setOscilloscopeHorScale(scope_handle);
-	status = setOscilloscopeVertScale(scope_handle);
+	status = setOscilloscopeHorScale(scope_handle, freq);
+	status = setOscilloscopeVertScale(scope_handle, amp);
 	// status = scopeAutoSet(scope_handle);
 	if(status != VI_SUCCESS)
 	{

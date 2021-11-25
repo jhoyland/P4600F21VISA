@@ -65,56 +65,39 @@ ViSession findOpenFuncgen(ViSession resource_manager, ViStatus* status)
     printf("Opened function generator\n");
 }
 
-ViStatus setOscilloscopeHorScale(ViSession scope_handle)
+ViStatus setOscilloscopeHorScale(ViSession scope_handle, double x)
 {
 	ViStatus status;
-	char returned_message[128];
-	status = viPrintf(scope_handle, "MEASUrement:IMMed:SOURCE CH1\n\n");
-	status = viPrintf(scope_handle, "MEASUrement:IMMed:TYPe FREQuency\n");
-	status = viPrintf(scope_handle, "MEASUrement:IMMed:VALue?\n");
- 	viScanf(scope_handle, "%s", returned_message);
- 	fflush(stdout);
+	// char returned_message[128];
+	// status = viPrintf(scope_handle, "MEASUrement:IMMed:SOURCE CH1\n\n");
+	// status = viPrintf(scope_handle, "MEASUrement:IMMed:TYPe FREQuency\n");
+	// status = viPrintf(scope_handle, "MEASUrement:IMMed:VALue?\n");
+ // 	viScanf(scope_handle, "%s", returned_message);
+ // 	fflush(stdout);
 
- 	if(status == VI_SUCCESS)
- 	{
- 		char *eptr;
-		double freq = strtod(returned_message, &eptr);
-		double timeScale = (1/freq);
-		char x[128];
-  		sprintf(x, "%f", timeScale);
-  		printf("%s\n", x);
-  		fflush(stdout);
+ 	// if(status == VI_SUCCESS)
+ 	// {
+	// char *eptr;
+	// double freq = strtod(returned_message, &eptr);
+	// double timeScale = (1/freq);
+	// char x[128];
+	// sprintf(x, "%f", timeScale);
+	// printf("%s\n", x);
+	// fflush(stdout);
+	double timeScale = 1/(2*x);
+	status = viPrintf(scope_handle, "HORizontal:MAIn:SCAle %f\n", timeScale);
 
-		status = viPrintf(scope_handle, "HORizontal:MAIn:SCAle %s\n", x);
-
- 	}
+ 	// }
 
  	return status;
 }
 
-ViStatus setOscilloscopeVertScale(ViSession scope_handle)
+ViStatus setOscilloscopeVertScale(ViSession scope_handle, double amp)
 {
 	ViStatus status;
-	char returned_message[128];
-	status = viPrintf(scope_handle, "MEASUrement:IMMed:SOURCE CH1\n\n");
-	status = viPrintf(scope_handle, "MEASUrement:IMMed:TYPe PK2pk\n");
-	status = viPrintf(scope_handle, "MEASUrement:IMMed:VALue?\n");
- 	viScanf(scope_handle, "%s", returned_message);
- 	fflush(stdout);
 
- 	if(status == VI_SUCCESS)
- 	{
- 		char *eptr;
-		double peakToPeak = strtod(returned_message, &eptr);
-		double voltScale = peakToPeak/8;
-		char x[128];
-  		sprintf(x, "%f", voltScale);
-  		printf("%s\n", x);
-  		fflush(stdout);
-
-		status = viPrintf(scope_handle, "CH1:VOLts %f\n", voltScale);
- 	}
-
+	double voltScale = (amp + (amp*0.1))/10;
+	status = viPrintf(scope_handle, "CH1:VOLts %f\n", voltScale);
 
 	return status;
 }

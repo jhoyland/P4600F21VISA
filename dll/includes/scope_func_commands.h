@@ -5,8 +5,8 @@
 ViSession resourceManager(ViStatus* status);
 ViSession findOpenScope(ViSession resource_manager, ViStatus* status);
 ViSession findOpenFuncgen(ViSession resource_manager, ViStatus* status);
-ViStatus setOscilloscopeHorScale(ViSession scope_handle);
-ViStatus setOscilloscopeVertScale(ViSession scope_handle);
+ViStatus setOscilloscopeHorScale(ViSession scope_handle, double x);
+ViStatus setOscilloscopeVertScale(ViSession scope_handle, double amp);
 double grabVoltsDiv(ViSession scope_handle, ViStatus* status);
 ViStatus setFuctionGenSin(ViSession func_handle, int channel, double freq, double amplitude, double offset, double phase);
 ViStatus scopeAutoSet(ViSession scope_handle);

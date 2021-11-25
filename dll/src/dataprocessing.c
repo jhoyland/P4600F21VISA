@@ -66,12 +66,17 @@ double stdev(double num[], double mean, int n)
 double rms(double num[], int n)
 {
 	// n is the length of the array
-	double sum = 0, rms = 0;
+	double sum = 0.0, rms = 0.0;
+	FILE* datafile = fopen("rms.dat","w");
+	fprintf(datafile, "\nrms");
 	for(int i=0; i<n; i++) //get the sum of squared values in array
 	{
-		sum += pow(num[i],2);
+		sum += pow(num[i],2.0);
+		fprintf(datafile, "\n%f",sum);
 	}
 	rms = sqrt(sum/n);
+	fprintf(datafile, "\n%f", rms);
+	fclose(datafile);
 
 	return rms;
 }
@@ -103,7 +108,7 @@ double Amp(double num[], int n)
 
 //Moving Average Filter:
 
-double smooth(double *d, int n, int w, double* end)
+void smooth(double *d, int n, int w, double* end)
 {
 	// where n is the length of the array, w is the window
 	// double* is empty array

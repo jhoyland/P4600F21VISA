@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<math.h>
 #include "visa.h"
+#include "dataprocessing.h"
 
 //#include<scopecontrol.h>
 
@@ -139,15 +140,20 @@ double Ampget(ViSession scope_handle, int channel)
  	FILE* datafile = fopen("curve.dat","w");
  	// attempt to turn data into double
  	double ddata[2500];
+ 	// get voltage scale 
+ 	double volts;
+ 	viPrintf(scope_handle, "CH%d:VOLTS?\n", channel);
+ 	viScanf(scope_handle, "%f", &volts);
 
   	for(i=0; i<2500; i++)
  	{  
-   		ddata[i] = (10.0/255.0) * (double)data[i];
-    	fprintf(datafile,"%f %d\n",ddata[i],data[i]);
+   		ddata[i] = (volts/255.0) * (double)data[i];
+    	fprintf(datafile,"%f, %d\n",ddata[i],data[i]);
   	}
-  	fprintf(datafile,"%f\n",rms(ddata,2500));
- 	fclose(datafile);
- 	double amp; 
- 	amp = rms(ddata, 2500) * M_SQRT2; 
- 	return amp;
+   	fprintf(datafile,"%f\n",rms(ddata,2500));
+ 	 fclose(datafile);
+ 	 double amp; 
+ 	 amp = rms(ddata, 2500) * M_SQRT2; 
+
+ 	 return amp;
 }

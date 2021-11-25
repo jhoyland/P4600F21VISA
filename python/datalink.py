@@ -110,7 +110,7 @@ def rms(num: "double []", n: "int") -> "double":
 def Amp(num: "double []", n: "int") -> "double":
     return _datalink.Amp(num, n)
 
-def smooth(d: "double *", n: "int", w: "int", end: "double *") -> "double":
+def smooth(d: "double *", n: "int", w: "int", end: "double *") -> "void":
     return _datalink.smooth(d, n, w, end)
 
 

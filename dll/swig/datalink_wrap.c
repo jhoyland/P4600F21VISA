@@ -3419,7 +3419,6 @@ SWIGINTERN PyObject *_wrap_smooth(PyObject *SWIGUNUSEDPARM(self), PyObject *args
   void *argp4 = 0 ;
   int res4 = 0 ;
   PyObject *swig_obj[4] ;
-  double result;
   
   if (!SWIG_Python_UnpackTuple(args, "smooth", 4, 4, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_double, 0 |  0 );
@@ -3442,8 +3441,8 @@ SWIGINTERN PyObject *_wrap_smooth(PyObject *SWIGUNUSEDPARM(self), PyObject *args
     SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "smooth" "', argument " "4"" of type '" "double *""'"); 
   }
   arg4 = (double *)(argp4);
-  result = (double)smooth(arg1,arg2,arg3,arg4);
-  resultobj = SWIG_From_double((double)(result));
+  smooth(arg1,arg2,arg3,arg4);
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
   return NULL;

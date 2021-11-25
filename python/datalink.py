@@ -80,7 +80,7 @@ def findscope(rm: "ViSession", channel: "int") -> "ViSession":
 def getdata(scope_handle: "ViSession", channel: "int", data: "char *") -> "void":
     return _datalink.getdata(scope_handle, channel, data)
 
-def getvoltage(data: "char *", n: "int", v: "double", data_voltage: "double *") -> "void":
-    return _datalink.getvoltage(data, n, v, data_voltage)
+def getvoltage(scope_handle: "ViSession", data: "char *", n: "int", data_voltage: "double *") -> "void":
+    return _datalink.getvoltage(scope_handle, data, n, data_voltage)
 
 

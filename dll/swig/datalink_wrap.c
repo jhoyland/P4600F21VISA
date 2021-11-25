@@ -3255,37 +3255,37 @@ fail:
 
 SWIGINTERN PyObject *_wrap_getvoltage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  char *arg1 = (char *) 0 ;
-  int arg2 ;
-  double arg3 ;
+  ViSession arg1 ;
+  char *arg2 = (char *) 0 ;
+  int arg3 ;
   double *arg4 = (double *) 0 ;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  double val3 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int val3 ;
   int ecode3 = 0 ;
   void *argp4 = 0 ;
   int res4 = 0 ;
   PyObject *swig_obj[4] ;
   
   if (!SWIG_Python_UnpackTuple(args, "getvoltage", 4, 4, swig_obj)) SWIG_fail;
-  res1 = SWIG_AsCharPtrAndSize(swig_obj[0], &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "getvoltage" "', argument " "1"" of type '" "char *""'");
+  ecode1 = SWIG_AsVal_unsigned_SS_int(swig_obj[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "getvoltage" "', argument " "1"" of type '" "ViSession""'");
+  } 
+  arg1 = (ViSession)(val1);
+  res2 = SWIG_AsCharPtrAndSize(swig_obj[1], &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "getvoltage" "', argument " "2"" of type '" "char *""'");
   }
-  arg1 = (char *)(buf1);
-  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "getvoltage" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = (int)(val2);
-  ecode3 = SWIG_AsVal_double(swig_obj[2], &val3);
+  arg2 = (char *)(buf2);
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "getvoltage" "', argument " "3"" of type '" "double""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "getvoltage" "', argument " "3"" of type '" "int""'");
   } 
-  arg3 = (double)(val3);
+  arg3 = (int)(val3);
   res4 = SWIG_ConvertPtr(swig_obj[3], &argp4,SWIGTYPE_p_double, 0 |  0 );
   if (!SWIG_IsOK(res4)) {
     SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "getvoltage" "', argument " "4"" of type '" "double *""'"); 
@@ -3293,10 +3293,10 @@ SWIGINTERN PyObject *_wrap_getvoltage(PyObject *SWIGUNUSEDPARM(self), PyObject *
   arg4 = (double *)(argp4);
   getvoltage(arg1,arg2,arg3,arg4);
   resultobj = SWIG_Py_Void();
-  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
   return resultobj;
 fail:
-  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
   return NULL;
 }
 

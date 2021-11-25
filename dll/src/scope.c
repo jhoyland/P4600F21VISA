@@ -50,9 +50,14 @@ void getdata(ViSession scope_handle, int channel, char *data)
   viScanf(scope_handle,"%t",data);
 }
 
-void getvoltage(char *data, int n, double v, double* data_voltage)
+void getvoltage(ViSession scope_handle, char *data, int n, double* data_voltage)
 {
-
+  double v;
+  char returned_message[128];
+  char *a;
+  viPrintf(scope_handle,"CH1:VOLTS?\n");
+  viScanf(scope_handle,"%t",returned_message);
+  v = strtod(returned_message,&a);
   int i;
   double data_double[n];
   FILE* outputfile =   fopen("data.dat","w");

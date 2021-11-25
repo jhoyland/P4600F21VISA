@@ -15,4 +15,4 @@ ViSession rm();
 double findamp(int channel, double amp, double frequency,ViSession fun_generator,ViSession scope_handle);
 ViSession findscope(ViSession rm, int channel);
 void getdata(ViSession scope_handle, int channel, char *data);
-void getvoltage(char *data, int n, double v, double* data_voltage);
+void getvoltage(ViSession scope_handle, char *data, int n, double* data_voltage);

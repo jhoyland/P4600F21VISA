@@ -32,12 +32,12 @@ double m;
 double rms;
 double data_voltage[2500];
 
-status = rm(&resource_manager);
-fun_generator = findgen(resource_manager, 1);
+//status = rm(&resource_manager);
+//fun_generator = findgen(resource_manager, 1);
 
-// Controlling Function Generator from PC
- setSinWave(fun_generator,1,10,100,0,0); //Set the waveform of CH1 to sine waveform with 100Hz frequency, 10Vpp amplitude, 0VDC offset and 0° start phase
- viPrintf(fun_generator,":OUTP1 ON\n");  
+// Controlling Function Generator from PC 
+ //setSinWave(fun_generator,1,10,100,0,0); //Set the waveform of CH1 to sine waveform with 100Hz frequency, 10Vpp amplitude, 0VDC offset and 0° start phase
+ //viPrintf(fun_generator,":OUTP1 ON\n");  
 // for oscilloscope
  scope_handle = findscope(resource_manager, 1);
  getdata(scope_handle,1, data);

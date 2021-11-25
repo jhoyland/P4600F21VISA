@@ -19,6 +19,8 @@ double findamp(int channel, double amp, double frequency,ViSession fun_generator
 {
 	char data[2500];
 	setSinWave(fun_generator,channel,amp,frequency,0,0);
+	viPrintf(scope_handle,"AUTOS EXEC\n");
+	Sleep(5000);
 	double data_double[2500];
 	double data_voltage[2500];
 	double a;
@@ -27,7 +29,7 @@ double findamp(int channel, double amp, double frequency,ViSession fun_generator
 	double ave[2496];
 
 	getdata(scope_handle,1, data);
-	getvoltage(data,2500, 2, data_voltage);
+	getvoltage(scope_handle,data,2500, data_voltage);
 	smoothed(2500,data_voltage,5,ave);
     m = mean(2500,data_voltage);
     rms = RMS(2500,data_voltage);
@@ -37,3 +39,4 @@ double findamp(int channel, double amp, double frequency,ViSession fun_generator
   printf("\nAmplitude =%f",a);
     return a;
 }
+

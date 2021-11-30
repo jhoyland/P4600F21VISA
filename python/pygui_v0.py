@@ -11,6 +11,7 @@ import tkinter as tk
 import numpy as np
 import time
 import threading
+import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -109,7 +110,7 @@ def GraphData():
             n += 1
             NewData.set()
         
-    print("Loop Broken!")
+    print("Loop Ended!")
     print(frequencies,amplitudes)
 
 #create a function to call new thread for graph only 
@@ -138,6 +139,59 @@ def Graph():
             graph.plot(frequencies, amplitudes)
             canvas.draw_idle()
             NewData.clear()
+
+def SaveGraph():
+    global frequencies 
+    global amplitudes
+    plt.plot(frequencies, amplitudes, color = 'blue', marker = 'o', linestyle = 'solid')
+    plt.xlabel("Frequency")
+    plt.ylabel("Amplitude")
+    plt.title("Frequency Vs. Amplitude")
+    plt.savefig('FvsA.png')
+    
+    file = open('Data.dat', 'w')
+    file.write("Frequencies")
+    file.write('\t')
+    file.write("Amplitudes")
+    file.write('\n')
+    for i in range(0,len(frequencies),1):
+            file.write(str(frequencies[i]))
+            file.write('\t')
+            file.write(str(amplitudes[i]))
+            file.write('\n')
+    file.close()
+    
+def SaveSettings():
+    start = str(var_fstart.get())
+    end = str(var_fend.get())
+    interval = str(var_fint.get())
+    ch = str(var_ch.get())
+    file = open('Settings.dat','w')
+    file.write(start)
+    file.write("\n")
+    file.write(end)
+    file.write("\n")
+    file.write(interval)
+    file.write("\n")
+    file.write(ch)
+    file.close()
+    
+def LoadSettings():
+    global var_fstart 
+    global var_fend 
+    global var_fint 
+    global var_ch
+    try:
+        file = open('Settings.dat','r')
+    except: 
+        print("No Save File Exists")
+    else:
+        var_fstart.set(int(file.readline()))
+        var_fend.set(int(file.readline()))
+        var_fint.set(int(file.readline()))
+        var_ch.set(int(file.readline()))
+        file.close()
+    
 
 def StartGraph():
     global t1
@@ -189,6 +243,9 @@ label_fint =  tk.Label(ctrlframe,text = "Intervals", width=15)
 label_auto =  tk.Button(ctrlframe,text = "Autoset", width=30, command = Auto)
 label_dat = tk.Button(ctrlframe,text = "Collect Data", width=30, command = Datathread)
 label_stop = tk.Button(ctrlframe,text = "Stop Collecting", width=30, command = StopFunc)
+label_save = tk.Button(ctrlframe,text = "Save Settings", width=30, command = SaveSettings)
+label_load = tk.Button(ctrlframe,text = "Load Settings", width=30, command = LoadSettings)
+label_savedata = tk.Button(ctrlframe,text = "Save Graph/Data", width=30, command = SaveGraph)
 label_exit = tk.Button(ctrlframe,text = "Exit", width=30, command = quit)
 
 
@@ -203,11 +260,14 @@ label_init.grid(row=0,column=0)
 label_ch.grid(row=1,column=0)
 label_fstart.grid(row=2,column=0)
 label_fend.grid(row=3,column=0)
-label_fint.grid(row=4,column=0,pady=(10,10))
-label_auto.grid(row=5,column=0,pady=(10,10))
-label_dat.grid(row=6,column=0,pady=(10,10))
-label_stop.grid(row=7,column=0,pady=(10,10))
-label_exit.grid(row=8,column=0,pady=(10,10))
+label_fint.grid(row=4,column=0)
+label_auto.grid(row=5,column=0,pady=(10,0))
+label_dat.grid(row=6,column=0)
+label_stop.grid(row=7,column=0)
+label_save.grid(row=8,column=0)
+label_load.grid(row=9,column=0)
+label_savedata.grid(row=10,column=0)
+label_exit.grid(row=11,column=0)
 
 
 #status will change depending on if device is initialized or not

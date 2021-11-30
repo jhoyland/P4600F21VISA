@@ -141,19 +141,22 @@ double Ampget(ViSession scope_handle, int channel)
  	// attempt to turn data into double
  	double ddata[2500];
  	// get voltage scale 
- 	double volts;
+ 	char volts[10];
  	viPrintf(scope_handle, "CH%d:VOLTS?\n", channel);
- 	viScanf(scope_handle, "%f", &volts);
+ 	viScanf(scope_handle, "%t", volts);
+ 	char *a;
+ 	double v; 
+ 	v = strtod(volts, &a);
 
   	for(i=0; i<2500; i++)
  	{  
-   		ddata[i] = (volts/255.0) * (double)data[i];
+   		ddata[i] = (v/255.0) * (double)data[i];
     	fprintf(datafile,"%f, %d\n",ddata[i],data[i]);
   	}
    	fprintf(datafile,"%f\n",rms(ddata,2500));
- 	 fclose(datafile);
- 	 double amp; 
- 	 amp = rms(ddata, 2500) * M_SQRT2; 
+ 	fclose(datafile);
+ 	double amp; 
+ 	amp = rms(ddata, 2500) * M_SQRT2; 
 
  	 return amp;
 }

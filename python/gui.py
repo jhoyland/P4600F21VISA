@@ -123,16 +123,31 @@ def saveSetting():
 
     #settings = [entry_Channel,entry_Freq,entry_step,entry_endFreq,entry_vptp,entry_offset,entry_phase]
     f = open('setting.txt', 'w')
-    f.write(var_Channel.get()+',')
-    f.write(var_Freq.get()+',')
-    f.write(var_step.get()+',')
-    f.write(var_endFreq.get()+',')
-    f.write(var_vptp.get()+',')
-    f.write(var_offset.get()+',')
+    f.write(var_Channel.get()+'\n')
+    f.write(var_Freq.get()+'\n')
+    f.write(var_step.get()+'\n')
+    f.write(var_endFreq.get()+'\n')
+    f.write(var_vptp.get()+'\n')
+    f.write(var_offset.get()+'\n')
     f.write(var_phase.get())
         
     f.close()
     label_saved.config(text="Settings Saved")
+    
+def loadSetting():
+
+    #settings = [entry_Channel,entry_Freq,entry_step,entry_endFreq,entry_vptp,entry_offset,entry_phase]
+    f = open('setting.txt', 'r')
+    var_Channel.set(int(f.readline()))
+    var_Freq.set(float(f.readline()))
+    var_step.set(float(f.readline()))
+    var_endFreq.set(float(f.readline()))
+    var_vptp.set(float(f.readline()))
+    var_offset.set(float(f.readline()))
+    var_phase.set(float(f.readline()))
+        
+    f.close()
+    label_saved.config(text="Settings loaded")
 #------------------------------------------------------------------------------
 root = tk.Tk()
 root.wm_title("LRC")
@@ -205,10 +220,13 @@ label_status.grid(row=9,column=0,columnspan=2,sticky="ew",pady=(10,10))
 saveData_button = tk.Button(ctrlframe, text="Save Data", command=saveData)
 saveData_button.grid(row=10,column=0,columnspan=1,sticky="ew")
 label_saved = tk.Label(ctrlframe,text=" ")
-label_saved.grid(row=11,column=0,columnspan=2,sticky="ew",pady=(10,10))
+label_saved.grid(row=12,column=0,columnspan=2,sticky="ew",pady=(10,10))
 
 saveSetting_button = tk.Button(ctrlframe, text="Save Setting", command=saveSetting)
 saveSetting_button.grid(row=10,column=1,columnspan=1,sticky="ew")
+
+loadSetting_button = tk.Button(ctrlframe, text="Load Setting", command=loadSetting)
+loadSetting_button.grid(row=11,column=0,columnspan=2,sticky="ew")
 #------------------------------------------------------------------------------
 #Start a plotting thread on its own in the background running continuously 
 #plotGraph checks if data is ready to be graphed

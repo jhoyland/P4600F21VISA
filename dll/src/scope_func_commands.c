@@ -96,8 +96,27 @@ ViStatus setOscilloscopeVertScale(ViSession scope_handle, double amp)
 {
 	ViStatus status;
 
-	double voltScale = (amp + (amp*0.1))/10;
-	status = viPrintf(scope_handle, "CH1:VOLts %f\n", voltScale);
+	char returned_message[128];
+	status = viPrintf(scope_handle, "MEASUrement:IMMed:SOURCE CH1\n\n");
+	status = viPrintf(scope_handle, "MEASUrement:IMMed:TYPe  PK2pk\n");
+	status = viPrintf(scope_handle, "MEASUrement:IMMed:VALue?\n");
+ 	viScanf(scope_handle, "%s", returned_message);
+ 	fflush(stdout);
+
+ 	if(status == VI_SUCCESS)
+ 	{
+		char *eptr;
+		double volt = strtod(returned_message, &eptr);
+		double voltScale = volt/8.0;
+		status = viPrintf(scope_handle, "CH1:VOLts %f\n", voltScale);
+	}
+	// char x[128];
+	// sprintf(x, "%f", timeScale);
+	// printf("%s\n", x);
+	// fflush(stdout);
+
+	// double voltScale = (amp + (amp*0.1))/10;
+	
 
 	return status;
 }

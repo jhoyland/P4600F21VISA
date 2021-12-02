@@ -13,7 +13,7 @@ int main(int argc, char** argv)
   double frequency = 23000;
   double amplitude = 1;
 
-  status = openInstruments(&scope_handle, &func_handle);
+  status = openInstruments(&scope_handle, &func_handle);   
 
   if(status != VI_SUCCESS)
     {
@@ -32,3 +32,4 @@ int main(int argc, char** argv)
     }
 
 }
+ 

@@ -3,18 +3,18 @@
 #include "calculations.h"
 #include <math.h>
 
+//This  function takes the raw data from the oscilloscope and used the scale to convert to voltages
 void convertCurveToVoltage(int n, char* rawDataArray, double scale, double* voltages)
 {
 
   for (int i=0;i<n;i++)
   {
-   // double tempArray[n];
-    //tempArray[i] = rawDataArray[i+6] ;        //rewrite the data to convert char to double and starts at element 6 
-    //voltages[i] = tempArray[i]/25.6*scale;    //use the scope sale to 
     voltages[i] = (double)rawDataArray[i+6]/10*scale;
   }
 }
 
+//This function takes a set of data and smooths it by taking small successive groups and averaging the 
+//and reassigns it as a new set of data
 void smoothing(double* voltages, int n, int w, double* voltagesSmoothed)
 {
   double sum;
@@ -33,6 +33,7 @@ void smoothing(double* voltages, int n, int w, double* voltagesSmoothed)
 
 }
 
+//This fucntion calculates the mean
 double mean(double* voltagesSmoothed, int n)
 {
   double sum = 0;
@@ -48,6 +49,7 @@ double mean(double* voltagesSmoothed, int n)
 
 }
 
+//This function Calculates and returns the rms
 double rootMeanSquare(double* voltagesSmoothed, int n)
 {
   double sumSquares = 0;

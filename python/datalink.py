@@ -74,4 +74,7 @@ def resource_manager_setup() -> "ViSession":
 def data_loop(functiongen_handle: "ViSession", scope_handle: "ViSession", FG_channel: "int", OSC_channel: "int", F_now: "float", V_offset: "float", fg_volt: "float", osc_resol: "int", move_avg_window: "int") -> "float":
     return _datalink.data_loop(functiongen_handle, scope_handle, FG_channel, OSC_channel, F_now, V_offset, fg_volt, osc_resol, move_avg_window)
 
+def data_loop_(functiongen_handle: "ViSession", scope_handle: "ViSession", FG_channel: "int", OSC_channel: "int", F_now: "float", V_offset: "float", fg_volt: "float", osc_resol: "int", move_avg_window: "int") -> "float":
+    return _datalink.data_loop_(functiongen_handle, scope_handle, FG_channel, OSC_channel, F_now, V_offset, fg_volt, osc_resol, move_avg_window)
+
 

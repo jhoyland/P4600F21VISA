@@ -10,6 +10,11 @@ void FG_parameters (ViSession functiongen_handle, int current_channel, float F_n
   Sleep(5000);
 }
 
+void FG_parameters_ (ViSession functiongen_handle, int current_channel, float F_now, float fg_volt, float V_offset, float phase_offset){
+  viPrintf(functiongen_handle,"SOURCE%d:APPLY:SQU %f,%f,%f,%f\n",current_channel,F_now,fg_volt,V_offset,phase_offset);
+  Sleep(5000);
+}
+
 void OSC_setup1(ViSession scope_handle,int current_channel, int osc_resol) {
   viPrintf(scope_handle,"DATA:WIDTH 1\n");
   viPrintf(scope_handle,"DATA:SOURCE CH%d\n",current_channel);

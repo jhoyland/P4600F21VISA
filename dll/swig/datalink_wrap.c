@@ -3112,12 +3112,99 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_data_loop_(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ViSession arg1 ;
+  ViSession arg2 ;
+  int arg3 ;
+  int arg4 ;
+  float arg5 ;
+  float arg6 ;
+  float arg7 ;
+  int arg8 ;
+  int arg9 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  float val5 ;
+  int ecode5 = 0 ;
+  float val6 ;
+  int ecode6 = 0 ;
+  float val7 ;
+  int ecode7 = 0 ;
+  int val8 ;
+  int ecode8 = 0 ;
+  int val9 ;
+  int ecode9 = 0 ;
+  PyObject *swig_obj[9] ;
+  float result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "data_loop_", 9, 9, swig_obj)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_int(swig_obj[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "data_loop_" "', argument " "1"" of type '" "ViSession""'");
+  } 
+  arg1 = (ViSession)(val1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "data_loop_" "', argument " "2"" of type '" "ViSession""'");
+  } 
+  arg2 = (ViSession)(val2);
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "data_loop_" "', argument " "3"" of type '" "int""'");
+  } 
+  arg3 = (int)(val3);
+  ecode4 = SWIG_AsVal_int(swig_obj[3], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "data_loop_" "', argument " "4"" of type '" "int""'");
+  } 
+  arg4 = (int)(val4);
+  ecode5 = SWIG_AsVal_float(swig_obj[4], &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "data_loop_" "', argument " "5"" of type '" "float""'");
+  } 
+  arg5 = (float)(val5);
+  ecode6 = SWIG_AsVal_float(swig_obj[5], &val6);
+  if (!SWIG_IsOK(ecode6)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "data_loop_" "', argument " "6"" of type '" "float""'");
+  } 
+  arg6 = (float)(val6);
+  ecode7 = SWIG_AsVal_float(swig_obj[6], &val7);
+  if (!SWIG_IsOK(ecode7)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "data_loop_" "', argument " "7"" of type '" "float""'");
+  } 
+  arg7 = (float)(val7);
+  ecode8 = SWIG_AsVal_int(swig_obj[7], &val8);
+  if (!SWIG_IsOK(ecode8)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode8), "in method '" "data_loop_" "', argument " "8"" of type '" "int""'");
+  } 
+  arg8 = (int)(val8);
+  ecode9 = SWIG_AsVal_int(swig_obj[8], &val9);
+  if (!SWIG_IsOK(ecode9)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode9), "in method '" "data_loop_" "', argument " "9"" of type '" "int""'");
+  } 
+  arg9 = (int)(val9);
+  result = (float)data_loop_(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
+  resultobj = SWIG_From_float((float)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 static PyMethodDef SwigMethods[] = {
 	 { "SWIG_PyInstanceMethod_New", SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { "OSC_setup", _wrap_OSC_setup, METH_O, NULL},
 	 { "FG_setup", _wrap_FG_setup, METH_O, NULL},
 	 { "resource_manager_setup", _wrap_resource_manager_setup, METH_NOARGS, NULL},
 	 { "data_loop", _wrap_data_loop, METH_VARARGS, NULL},
+	 { "data_loop_", _wrap_data_loop_, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
